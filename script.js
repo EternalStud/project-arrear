@@ -6,10 +6,13 @@ window.onerror = function(message, source, lineno, colno, error) {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Determine API Base URL depending on local testing vs production domain
-    const API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
-        ? ""
-        : "https://arrear-backend.onrender.com";
+    // Determine API Base URL depending on where the page is hosted
+    let API_BASE_URL = "";
+    if (window.location.hostname !== "127.0.0.1" && 
+        window.location.hostname !== "localhost" && 
+        !window.location.hostname.includes("onrender.com")) {
+        API_BASE_URL = "https://arrear-backend.onrender.com";
+    }
 
     // Files tracking object
     const files = {
