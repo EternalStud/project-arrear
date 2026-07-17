@@ -426,6 +426,14 @@ document.addEventListener("DOMContentLoaded", () => {
             window.URL.revokeObjectURL(downloadUrl);
             
             finishProgressBar("Excel file generated successfully! Downloading...");
+            
+            // Trigger donation modal
+            setTimeout(() => {
+                const modal = document.getElementById("donation-modal");
+                if (modal) {
+                    modal.style.display = "flex";
+                }
+            }, 1000);
         } catch (err) {
             failProgressBar("Generation failed: " + err.message);
             alert("Error: " + err.message);
@@ -434,4 +442,29 @@ document.addEventListener("DOMContentLoaded", () => {
             btnSubmit.disabled = false;
         }
     });
+
+    // Donation Modal Handlers
+    const donationModal = document.getElementById("donation-modal");
+    const btnCloseModal = document.getElementById("btn-close-modal");
+    const btnModalOk = document.getElementById("btn-modal-ok");
+
+    if (btnCloseModal && donationModal) {
+        btnCloseModal.addEventListener("click", () => {
+            donationModal.style.display = "none";
+        });
+    }
+
+    if (btnModalOk && donationModal) {
+        btnModalOk.addEventListener("click", () => {
+            donationModal.style.display = "none";
+        });
+    }
+
+    if (donationModal) {
+        donationModal.addEventListener("click", (e) => {
+            if (e.target === donationModal) {
+                donationModal.style.display = "none";
+            }
+        });
+    }
 });
