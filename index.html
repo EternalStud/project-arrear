@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar Teacher Arrear Form Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">📊</div>
+                <h1>DPO Muzaffarpur</h1>
+            </div>
+            <p class="subtitle">Teacher Salary & DA Arrear Form Generator</p>
+        </header>
+
+        <main class="grid-layout">
+            <!-- Left Panel: Form Input & Document Upload -->
+            <section class="card upload-card">
+                <h2>1. Upload HRMS Documents</h2>
+                <form id="arrear-form" enctype="multipart/form-data">
+                    <div class="upload-grid">
+                        <div class="drop-zone" id="dz-yp1">
+                            <span class="drop-zone-icon">📄</span>
+                            <span class="drop-zone-title">Yearly Statement 2023-24</span>
+                            <span class="drop-zone-desc">Drag & drop PDF or click to browse</span>
+                            <div class="file-name-badge" id="name-yp1"></div>
+                        </div>
+                        <input type="file" name="yearly_pdf_1" id="file-yp1" accept="application/pdf" style="opacity: 0; position: absolute; width: 0; height: 0; pointer-events: none;">
+
+                        <div class="drop-zone" id="dz-yp2">
+                            <span class="drop-zone-icon">📄</span>
+                            <span class="drop-zone-title">Yearly Statement 2024-25</span>
+                            <span class="drop-zone-desc">Drag & drop PDF or click to browse</span>
+                            <div class="file-name-badge" id="name-yp2"></div>
+                        </div>
+                        <input type="file" name="yearly_pdf_2" id="file-yp2" accept="application/pdf" style="opacity: 0; position: absolute; width: 0; height: 0; pointer-events: none;">
+
+                        <div class="drop-zone" id="dz-yp3">
+                            <span class="drop-zone-icon">📄</span>
+                            <span class="drop-zone-title">Yearly Statement 2025-26</span>
+                            <span class="drop-zone-desc">Drag & drop PDF or click to browse</span>
+                            <div class="file-name-badge" id="name-yp3"></div>
+                        </div>
+                        <input type="file" name="yearly_pdf_3" id="file-yp3" accept="application/pdf" style="opacity: 0; position: absolute; width: 0; height: 0; pointer-events: none;">
+
+                        <div class="drop-zone" id="dz-ps">
+                            <span class="drop-zone-icon">💳</span>
+                            <span class="drop-zone-title">Latest Pay Slip</span>
+                            <span class="drop-zone-desc">Drag & drop PDF or click to browse</span>
+                            <div class="file-name-badge" id="name-ps"></div>
+                        </div>
+                        <input type="file" name="payslip_pdf" id="file-ps" accept="application/pdf" style="opacity: 0; position: absolute; width: 0; height: 0; pointer-events: none;">
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <h2>2. School & Block Details</h2>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="school-name">School Name</label>
+                            <input type="text" id="school-name" name="school_name" placeholder="E.g., Middle School Ratanpur" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="block-name">Block Name</label>
+                            <input type="text" id="block-name" name="block_name" placeholder="E.g., Kanti" required>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <h2>3. Arrear Settings</h2>
+                    <div class="input-row settings-row">
+                        <div class="input-group">
+                            <label>Arrear Type</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="arrear_type" value="both" checked>
+                                    <span class="radio-custom"></span> Both Sheets
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="arrear_type" value="salary">
+                                    <span class="radio-custom"></span> Salary Arrear Only
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="arrear_type" value="da">
+                                    <span class="radio-custom"></span> DA Arrear Only
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="hra-section-header">
+                        <h2>4. HRA Rate Rules</h2>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-add-hra">+ Add HRA Range</button>
+                    </div>
+                    
+                    <div class="input-group" style="margin-top: 8px;">
+                        <label for="hra-presets">Quick Presets</label>
+                        <select id="hra-presets" class="preset-select">
+                            <option value="">-- Choose a standard preset or customize below --</option>
+                            <option value="4to5">Cat A: 4% (before Jan-24) → 5% (after Jan-24)</option>
+                            <option value="7.5to10">Cat B: 7.5% (before Jan-24) → 10% (after Jan-24)</option>
+                            <option value="corrected">Corrected Joiner: Rural default 4% but school is 7.5% → 10%</option>
+                            <option value="custom">Custom Configuration</option>
+                        </select>
+                    </div>
+
+                    <div class="hra-table-container">
+                        <table class="hra-table" id="hra-table">
+                            <thead>
+                                <tr>
+                                    <th>From (Month)</th>
+                                    <th>To (Month)</th>
+                                    <th>Admissible Rate</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hra-table-body">
+                                <!-- HRA Rows dynamically added -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" id="btn-preview" disabled>🔄 Parse & Preview</button>
+                        <button type="submit" class="btn btn-primary" id="btn-submit" disabled>📥 Generate & Download</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Right Panel: Real-time Live Preview & Status -->
+            <section class="card preview-card">
+                <h2>Arrear Calculation Live Preview</h2>
+                
+                <div class="preview-placeholder" id="preview-placeholder">
+                    <div class="spinner-icon">📂</div>
+                    <h3>No Data Loaded</h3>
+                    <p>Upload all 4 PDF files and configure HRA rates to see a preview of calculated arrears.</p>
+                </div>
+
+                <div class="preview-content" id="preview-content" style="display: none;">
+                    <div class="alert-box" id="warning-box" style="display: none;"></div>
+
+                    <div class="employee-header">
+                        <div class="emp-avatar">👤</div>
+                        <div class="emp-meta">
+                            <h3 id="preview-name">MD ZAFAR ALI</h3>
+                            <p id="preview-desig">School Teacher(11-12)</p>
+                        </div>
+                        <div class="emp-badge" id="preview-step">Step 1 (XI-XII)</div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">DOJ</span>
+                            <span class="info-val" id="preview-doj">16-11-2023</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">PRAN</span>
+                            <span class="info-val" id="preview-pran">110139747944</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">PAN</span>
+                            <span class="info-val" id="preview-pan">BELPA2587Q</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Increment</span>
+                            <span class="info-val" id="preview-inc-month">July</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-box">
+                        <div class="summary-metric">
+                            <span class="metric-label">Estimated Net Arrear</span>
+                            <span class="metric-val" id="preview-total-arrear">₹0</span>
+                        </div>
+                        <div class="summary-desc" id="preview-in-words">
+                            Rupees Zero Only
+                        </div>
+                    </div>
+
+                    <div class="details-list-header">
+                        <h3>Detailed Month-wise Differences</h3>
+                    </div>
+                    <div class="details-list-container">
+                        <table class="details-table">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Paid Days</th>
+                                    <th>Basic Diff</th>
+                                    <th>DA Diff</th>
+                                    <th>HRA Diff</th>
+                                    <th>Net Arrear</th>
+                                </tr>
+                            </thead>
+                            <tbody id="preview-table-body">
+                                <!-- Month rows injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

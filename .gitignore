@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Output test files
+output_test.xlsx
+screenshot.jpg
+screenshot_*.jpg
+
+# Local HEIC and raw screenshots
+*.heic
