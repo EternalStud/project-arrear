@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Determine API Base URL depending on local testing vs production domain
     const API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
         ? ""
-        : "https://arrear-api.uhskaparpurakanti.in";
+        : "https://arrear-backend.onrender.com";
 
     // Files tracking object
     const files = {
