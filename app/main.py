@@ -2,6 +2,7 @@
 import os
 import tempfile
 import json
+import asyncio
 from typing import List, Optional
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
@@ -17,6 +18,10 @@ from app.generators.salary_arrear_writer import write_salary_arrear_sheet
 from app.generators.da_arrear_writer import write_da_arrear_sheet
 
 app = FastAPI(title="DPO Muzaffarpur Arrear Form Generator")
+
+# Semaphore to throttle concurrent CPU-intensive PDF parsing & Excel generation
+MAX_CONCURRENT_USERS = 10
+semaphore = asyncio.Semaphore(MAX_CONCURRENT_USERS)
 
 # Enable CORS for frontend hosting compatibility
 app.add_middleware(
@@ -49,6 +54,15 @@ async def api_parse_preview(
     payslip_pdf: UploadFile = File(...),
     hra_rates: Optional[str] = Form(None)
 ):
+    try:
+        # Wait for up to 60 seconds to acquire the semaphore
+        await asyncio.wait_for(semaphore.acquire(), timeout=60.0)
+    except asyncio.TimeoutError:
+        raise HTTPException(
+            status_code=503,
+            detail="The server is busy processing other requests. Please wait a moment and try again!"
+        )
+
     temp_files = []
     try:
         # Save files to temp paths
@@ -131,6 +145,8 @@ async def api_parse_preview(
         traceback.print_exc()
         raise HTTPException(status_code=400, detail=f"Failed to parse PDFs: {str(e)}")
     finally:
+        # Release the semaphore
+        semaphore.release()
         # Clean up temp files
         for path in temp_files:
             if os.path.exists(path):
@@ -147,6 +163,15 @@ async def api_generate_arrear(
     hra_rates: str = Form(...), # JSON string containing List[Dict[str, Any]]
     arrear_type: str = Form("both") # "salary", "da", "both"
 ):
+    try:
+        # Wait for up to 60 seconds to acquire the semaphore
+        await asyncio.wait_for(semaphore.acquire(), timeout=60.0)
+    except asyncio.TimeoutError:
+        raise HTTPException(
+            status_code=503,
+            detail="The server is busy processing other requests. Please wait a moment and try again!"
+        )
+
     temp_files = []
     try:
         # Parse HRA rules
@@ -233,6 +258,8 @@ async def api_generate_arrear(
         traceback.print_exc()
         raise HTTPException(status_code=400, detail=f"Failed to generate Excel: {str(e)}")
     finally:
+        # Release the semaphore
+        semaphore.release()
         # Clean up temp inputs
         for path in temp_files:
             if os.path.exists(path):
