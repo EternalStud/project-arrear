@@ -135,6 +135,17 @@
                         <button type="button" class="btn btn-secondary" id="btn-preview" disabled>🔄 Parse & Preview</button>
                         <button type="submit" class="btn btn-primary" id="btn-submit" disabled>📥 Generate & Download</button>
                     </div>
+
+                    <!-- Animated Progress Bar -->
+                    <div class="progress-container" id="progress-container" style="display: none; margin-top: 1.5rem;">
+                        <div class="progress-header">
+                            <span class="progress-status" id="progress-status">Analyzing documents...</span>
+                            <span class="progress-percent" id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                        </div>
+                    </div>
                 </form>
             </section>
 

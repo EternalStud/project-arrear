@@ -51,6 +51,70 @@ document.addEventListener("DOMContentLoaded", () => {
     const hraTableBody = document.getElementById("hra-table-body");
     const arrearForm = document.getElementById("arrear-form");
 
+    // Progress Bar DOM Elements
+    const progressContainer = document.getElementById("progress-container");
+    const progressStatus = document.getElementById("progress-status");
+    const progressPercent = document.getElementById("progress-percent");
+    const progressBarFill = document.getElementById("progress-bar-fill");
+    let progressInterval = null;
+
+    function startProgressBar(initialMsg) {
+        progressContainer.style.display = "block";
+        progressBarFill.style.width = "0%";
+        progressBarFill.style.background = "linear-gradient(90deg, var(--primary-color), #8b5cf6)";
+        progressBarFill.style.boxShadow = "0 0 10px rgba(99, 102, 241, 0.5)";
+        progressPercent.textContent = "0%";
+        progressStatus.textContent = initialMsg;
+
+        let percent = 0;
+        const steps = [
+            { limit: 25, msg: "Uploading HRMS files..." },
+            { limit: 50, msg: "Analyzing salary slips & statements..." },
+            { limit: 75, msg: "Calculating admissible pay rate slabs..." },
+            { limit: 95, msg: "Compiling Excel formulas & layout..." }
+        ];
+
+        let currentStepIndex = 0;
+        clearInterval(progressInterval);
+        progressInterval = setInterval(() => {
+            if (currentStepIndex >= steps.length) {
+                clearInterval(progressInterval);
+                return;
+            }
+
+            const currentStep = steps[currentStepIndex];
+            percent += 1;
+
+            progressBarFill.style.width = percent + "%";
+            progressPercent.textContent = percent + "%";
+            progressStatus.textContent = currentStep.msg;
+
+            if (percent >= currentStep.limit) {
+                currentStepIndex++;
+            }
+        }, 120);
+    }
+
+    function finishProgressBar(successMsg) {
+        clearInterval(progressInterval);
+        progressBarFill.style.width = "100%";
+        progressPercent.textContent = "100%";
+        progressStatus.textContent = successMsg;
+
+        setTimeout(() => {
+            progressContainer.style.display = "none";
+        }, 3000);
+    }
+
+    function failProgressBar(errorMsg) {
+        clearInterval(progressInterval);
+        progressBarFill.style.width = "100%";
+        progressBarFill.style.background = "#ef4444";
+        progressBarFill.style.boxShadow = "0 0 10px rgba(239, 68, 68, 0.5)";
+        progressPercent.textContent = "Error";
+        progressStatus.textContent = errorMsg;
+    }
+
     // Preview Panel Elements
     const previewPlaceholder = document.getElementById("preview-placeholder");
     const previewContent = document.getElementById("preview-content");
@@ -195,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         btnPreview.textContent = "🔄 Parsing...";
         btnPreview.disabled = true;
+        startProgressBar("Initiating HRMS document upload...");
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/parse-preview`, {
@@ -209,7 +274,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await response.json();
             renderPreview(data);
+            finishProgressBar("Analysis complete! Preview updated.");
         } catch (err) {
+            failProgressBar("Analysis failed: " + err.message);
             alert("Error: " + err.message);
         } finally {
             btnPreview.textContent = "🔄 Parse & Preview";
@@ -325,6 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         btnSubmit.textContent = "📥 Generating Excel...";
         btnSubmit.disabled = true;
+        startProgressBar("Uploading documents for spreadsheet generation...");
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/generate-arrear`, {
@@ -357,7 +425,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(downloadUrl);
             
+            finishProgressBar("Excel file generated successfully! Downloading...");
         } catch (err) {
+            failProgressBar("Generation failed: " + err.message);
             alert("Error: " + err.message);
         } finally {
             btnSubmit.textContent = "📥 Generate & Download";
