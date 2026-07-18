@@ -67,7 +67,9 @@ def compute_arrears(
                 continue
         
         # Calculate what the standard basic pay rate should have been for this calendar month
-        std_basic_rate = get_admissible_basic(starting_step, column_idx, doj_str, year, month_num)
+        std_basic_rate = get_admissible_basic(
+            starting_step, column_idx, doj_str, year, month_num, joining_basic=joining_basic
+        )
         
         # Check for LWP pro-ration ratio
         # Standard drawn basic pay rate for that month:

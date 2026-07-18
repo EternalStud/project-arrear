@@ -82,7 +82,8 @@ def get_admissible_basic(
     column_idx: int,
     doj_str: str,
     target_year: int,
-    target_month: int
+    target_month: int,
+    joining_basic: int = None
 ) -> int:
     """
     Calculates the correct admissible Basic Pay rate for a target month and year,
@@ -139,8 +140,16 @@ def get_admissible_basic(
         current_step += 1
         current_year = inc_year
         
-    # Cap step at max (20)
-    current_step = min(current_step, 20)
-    
-    # Lookup in fitment matrix
-    return FITMENT_MATRIX[current_step][column_idx]
+    if joining_basic:
+        # Dynamically calculate by adding 3% each increment, rounded to nearest 10
+        basic = joining_basic
+        num_increments = current_step - starting_step
+        for _ in range(num_increments):
+            basic = round((basic * 1.03) / 10) * 10
+        return basic
+    else:
+        # Cap step at max (20)
+        current_step = min(current_step, 20)
+        
+        # Lookup in fitment matrix
+        return FITMENT_MATRIX[current_step][column_idx]
