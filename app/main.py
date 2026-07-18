@@ -191,9 +191,12 @@ async def api_generate_arrear(request: Request):
             
         school_name = form.get("school_name", "")
         block_name = form.get("block_name", "")
+        designation = form.get("designation", "")
         arrear_type = form.get("arrear_type", "both")
         hra_rates_str = form.get("hra_rates")
         da_rates_str = form.get("da_rates")
+        scope_start = form.get("scope_start")
+        scope_end = form.get("scope_end")
         
         try:
             hra_rules = json.loads(hra_rates_str) if hra_rates_str else []
@@ -218,6 +221,8 @@ async def api_generate_arrear(request: Request):
             
         payslip_info["school_name"] = school_name
         payslip_info["block_name"] = block_name
+        if designation:
+            payslip_info["designation"] = designation
         
         # Parse yearly statements
         drawn_data = {}
@@ -233,7 +238,9 @@ async def api_generate_arrear(request: Request):
             employee_info=payslip_info,
             hra_rules=hra_rules,
             skip_joining_month=True,
-            da_rates=da_rates
+            da_rates=da_rates,
+            scope_start=scope_start,
+            scope_end=scope_end
         )
         
         # Load Template

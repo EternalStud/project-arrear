@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Files tracking object
     const files = {}; // key: form field name (e.g., "yearly_pdf_0"), value: File object
 
-    const btnPreview = document.getElementById("btn-preview");
     const btnSubmit = document.getElementById("btn-submit");
     const btnAddHra = document.getElementById("btn-add-hra");
     const hraPresets = document.getElementById("hra-presets");
@@ -233,7 +232,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const hasPayslip = !!files["payslip_pdf"];
         const allReady = yearlyFilled === yearlyCount && hasPayslip && yearlyCount > 0;
         
-        btnPreview.disabled = !allReady;
         btnSubmit.disabled = !allReady;
     }
 
@@ -352,133 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return list;
     }
 
-    // Preview click handler
-    btnPreview.addEventListener("click", async () => {
-        const formData = new FormData();
-        Object.keys(files).forEach(key => {
-            formData.append(key, files[key]);
-        });
-        
-        const hraData = getHraRatesData();
-        formData.append("hra_rates", JSON.stringify(hraData));
-        formData.append("da_rates", JSON.stringify(getDaRatesData()));
-        
-        btnPreview.textContent = "🔄 Parsing...";
-        btnPreview.disabled = true;
-        startProgressBar("Initiating HRMS document upload...");
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/parse-preview`, {
-                method: "POST",
-                body: formData
-            });
-
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.detail || "Parse failed");
-            }
-
-            const data = await response.json();
-            renderPreview(data);
-            finishProgressBar("Analysis complete! Preview updated.");
-        } catch (err) {
-            failProgressBar("Analysis failed: " + err.message);
-            alert("Error: " + err.message);
-        } finally {
-            btnPreview.textContent = "🔄 Parse & Preview";
-            btnPreview.disabled = false;
-        }
-    });
-
-    function renderPreview(data) {
-        previewPlaceholder.style.display = "none";
-        previewContent.style.display = "block";
-        
-        const emp = data.employee;
-        previewName.textContent = emp.name || "Unknown";
-        previewDesig.textContent = emp.designation || "Unknown";
-        
-        if (data.designation_category && data.starting_step) {
-            previewStep.textContent = `Step ${data.starting_step} (${data.designation_category})`;
-            previewStep.style.display = "block";
-        } else {
-            previewStep.style.display = "none";
-        }
-
-        const fitmentBadge = document.getElementById("fitment-badge");
-        if (data.fitment_info) {
-            document.getElementById("fitment-step").textContent = data.fitment_info.starting_step;
-            document.getElementById("fitment-category").textContent = data.fitment_info.designation_category;
-            document.getElementById("fitment-basic").textContent = "₹" + (data.fitment_info.basic_at_step || 0).toLocaleString("en-IN");
-            fitmentBadge.style.display = "block";
-        } else {
-            fitmentBadge.style.display = "none";
-        }
-        
-        previewDoj.textContent = emp.doj || "N/A";
-        previewPran.textContent = emp.pran || "N/A";
-        previewPan.textContent = emp.pan || "N/A";
-        
-        // Determine increment month
-        if (emp.doj) {
-            const parts = emp.doj.split("-");
-            if (parts.length >= 2) {
-                const month = parseInt(parts[1]);
-                previewIncMonth.textContent = (month >= 7 && month <= 12) ? "July" : "January";
-            } else {
-                previewIncMonth.textContent = "N/A";
-            }
-        } else {
-            previewIncMonth.textContent = "N/A";
-        }
-        
-        // Warning notification
-        const summaryInfo = data.drawn_summary;
-        if (summaryInfo.warning) {
-            warningBox.textContent = summaryInfo.warning;
-            warningBox.style.display = "block";
-        } else {
-            warningBox.style.display = "none";
-        }
-
-        // Totals metrics
-        if (data.totals) {
-            previewTotalArrear.textContent = `₹${data.totals.net.toLocaleString("en-IN")}`;
-            previewInWords.textContent = data.in_words || "";
-        } else {
-            previewTotalArrear.textContent = "₹0";
-            previewInWords.textContent = "Rupees Zero Only";
-        }
-
-        // Table details
-        previewTableBody.innerHTML = "";
-        if (data.arrear_months && data.arrear_months.length > 0) {
-            data.arrear_months.forEach(item => {
-                const tr = document.createElement("tr");
-                const diff = item.difference;
-                
-                // Format values for cleaner look
-                const basicDiff = diff.basic > 0 ? `+${diff.basic}` : `${diff.basic}`;
-                const daDiff = diff.da > 0 ? `+${diff.da}` : `${diff.da}`;
-                const hraDiff = diff.hra > 0 ? `+${diff.hra}` : `${diff.hra}`;
-                const netDiff = diff.net > 0 ? `+${diff.net}` : `${diff.net}`;
-                
-                tr.innerHTML = `
-                    <td><strong>${item.month_label}</strong></td>
-                    <td>${item.admissible.days}</td>
-                    <td class="${diff.basic > 0 ? 'text-success' : ''}">${basicDiff}</td>
-                    <td class="${diff.da > 0 ? 'text-success' : ''}">${daDiff}</td>
-                    <td class="${diff.hra > 0 ? 'text-success' : ''}">${hraDiff}</td>
-                    <td class="text-bold ${diff.net > 0 ? 'text-success' : ''}">${netDiff}</td>
-                `;
-                previewTableBody.appendChild(tr);
-            });
-        } else {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `<td colspan="6" style="text-align: center; color: var(--text-secondary);">No monthly differences detected. All drawn values match admissible.</td>`;
-            previewTableBody.appendChild(tr);
-        }
-    }
 
     // Submit handler (Generate Excel and download)
     arrearForm.addEventListener("submit", async (e) => {
@@ -486,6 +358,9 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const schoolName = document.getElementById("school-name").value.trim();
         const blockName = document.getElementById("block-name").value.trim();
+        const designation = document.getElementById("designation") ? document.getElementById("designation").value.trim() : "";
+        const scopeStart = document.getElementById("scope-start") ? document.getElementById("scope-start").value : "";
+        const scopeEnd = document.getElementById("scope-end") ? document.getElementById("scope-end").value : "";
         
         if (!schoolName || !blockName) {
             alert("Please enter School Name and Block Name.");
@@ -499,6 +374,9 @@ document.addEventListener("DOMContentLoaded", () => {
         
         formData.append("school_name", schoolName);
         formData.append("block_name", blockName);
+        formData.append("designation", designation);
+        formData.append("scope_start", scopeStart);
+        formData.append("scope_end", scopeEnd);
         
         const hraData = getHraRatesData();
         formData.append("hra_rates", JSON.stringify(hraData));

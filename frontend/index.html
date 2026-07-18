@@ -67,6 +67,18 @@
                             <input type="text" id="block-name" name="block_name" placeholder="E.g., Kanti" required>
                         </div>
                     </div>
+                    
+                    <div class="input-group" style="margin-top: 16px;">
+                        <label for="designation">Designation (If Payslip fails to detect)</label>
+                        <select id="designation" name="designation">
+                            <option value="">Auto-detect from Payslip (Default)</option>
+                            <option value="Basic Grade Teacher">Basic Grade Teacher (Class 1-5)</option>
+                            <option value="Graduate Grade Teacher">Graduate Grade Teacher (Class 6-8)</option>
+                            <option value="Secondary Teacher">Secondary Teacher (Class 9-10)</option>
+                            <option value="Higher Secondary Teacher">Higher Secondary Teacher (Class 11-12)</option>
+                            <option value="Headmaster">Headmaster</option>
+                        </select>
+                    </div>
 
                     <div class="section-divider"></div>
 
@@ -157,7 +169,6 @@
                     </div>
 
                     <div class="action-buttons">
-                        <button type="button" class="btn btn-secondary" id="btn-preview" disabled>🔄 Parse & Preview</button>
                         <button type="submit" class="btn btn-primary" id="btn-submit" disabled>📥 Generate & Download</button>
                     </div>
 
@@ -172,90 +183,6 @@
                         </div>
                     </div>
                 </form>
-            </section>
-
-            <!-- Right Panel: Real-time Live Preview & Status -->
-            <section class="card preview-card">
-                <h2>Arrear Calculation Live Preview</h2>
-                
-                <div class="preview-placeholder" id="preview-placeholder">
-                    <div class="spinner-icon">📂</div>
-                    <h3>No Data Loaded</h3>
-                    <p>Upload all 4 PDF files and configure HRA rates to see a preview of calculated arrears.</p>
-                </div>
-
-                <div class="preview-content" id="preview-content" style="display: none;">
-                    <div class="alert-box" id="warning-box" style="display: none;"></div>
-
-                    <div class="employee-header">
-                        <div class="emp-avatar">👤</div>
-                        <div class="emp-meta">
-                            <h3 id="preview-name">MD ZAFAR ALI</h3>
-                            <p id="preview-desig">School Teacher(11-12)</p>
-                        </div>
-                        <div class="emp-badge" id="preview-step">Step 1 (XI-XII)</div>
-                    </div>
-
-                    <div class="fitment-badge" id="fitment-badge" style="display: none;">
-                        <div class="fitment-header">📊 Fitment Matrix Match</div>
-                        <div class="fitment-details">
-                            <span class="fitment-item">Step: <strong id="fitment-step">-</strong></span>
-                            <span class="fitment-item">Category: <strong id="fitment-category">-</strong></span>
-                            <span class="fitment-item">Basic Rate: <strong id="fitment-basic">-</strong></span>
-                        </div>
-                    </div>
-
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">DOJ</span>
-                            <span class="info-val" id="preview-doj">16-11-2023</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">PRAN</span>
-                            <span class="info-val" id="preview-pran">110139747944</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">PAN</span>
-                            <span class="info-val" id="preview-pan">BELPA2587Q</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Increment</span>
-                            <span class="info-val" id="preview-inc-month">July</span>
-                        </div>
-                    </div>
-
-                    <div class="summary-box">
-                        <div class="summary-metric">
-                            <span class="metric-label">Estimated Net Arrear</span>
-                            <span class="metric-val" id="preview-total-arrear">₹0</span>
-                        </div>
-                        <div class="summary-desc" id="preview-in-words">
-                            Rupees Zero Only
-                        </div>
-                    </div>
-
-                    <div class="details-list-header">
-                        <h3>Detailed Month-wise Differences</h3>
-                    </div>
-                    <div class="details-list-container">
-                        <table class="details-table">
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th>Paid Days</th>
-                                    <th>Basic Diff</th>
-                                    <th>DA Diff</th>
-                                    <th>HRA Diff</th>
-                                    <th>Net Arrear</th>
-                                </tr>
-                            </thead>
-                            <tbody id="preview-table-body">
-                                <!-- Month rows injected here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
         </main>
         
         <footer>

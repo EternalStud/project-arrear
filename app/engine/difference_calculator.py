@@ -12,7 +12,9 @@ def compute_arrears(
     employee_info: Dict[str, Any],
     hra_rules: List[Dict[str, Any]],
     skip_joining_month: bool = True,
-    da_rates: Optional[List[Dict[str, Any]]] = None
+    da_rates: Optional[List[Dict[str, Any]]] = None,
+    scope_start: Optional[str] = None,
+    scope_end: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Computes differences for all months in drawn_data, detects months needing arrears,
@@ -53,9 +55,16 @@ def compute_arrears(
         parts = month_lbl.split("-")
         month_name = parts[0]
         year = 2000 + int(parts[1])
+        month_num = MONTH_TO_NUM_MAP[month_name]
+        
+        # Check scope filter (format: YYYY-MM)
+        if scope_start and scope_end:
+            month_str = f"{year}-{month_num:02d}"
+            if not (scope_start <= month_str <= scope_end):
+                continue
         
         # Calculate what the standard basic pay rate should have been for this calendar month
-        std_basic_rate = get_admissible_basic(starting_step, column_idx, doj_str, year, MONTH_TO_NUM_MAP[month_name])
+        std_basic_rate = get_admissible_basic(starting_step, column_idx, doj_str, year, month_num)
         
         # Check for LWP pro-ration ratio
         # Standard drawn basic pay rate for that month:
