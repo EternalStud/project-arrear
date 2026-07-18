@@ -13,15 +13,19 @@ def get_da_rate_for_date(year: int, month: int, da_rates: List[Dict[str, Any]] =
     date_str = f"{year}-{month:02d}"
     rates = da_rates if da_rates else DA_RATES
     for entry in rates:
-        if entry["from"] <= date_str <= entry["to"]:
-            rate = entry["rate"]
-            if da_rates and rate > 1:
+        from_m = entry.get("from") or entry.get("from_month")
+        to_m = entry.get("to") or entry.get("to_month") or "9999-12"
+        rate = entry.get("rate") or entry.get("rate_percent") or 0.0
+        
+        if from_m <= date_str <= to_m:
+            if rate > 1.0:
                 return rate / 100.0
             return rate
     
     # Fallback to the latest known rate
-    rate = rates[-1]["rate"]
-    if da_rates and rate > 1:
+    last_entry = rates[-1]
+    rate = last_entry.get("rate") or last_entry.get("rate_percent") or 0.0
+    if rate > 1.0:
         return rate / 100.0
     return rate
 
