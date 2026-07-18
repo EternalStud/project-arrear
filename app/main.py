@@ -192,6 +192,7 @@ async def api_generate_arrear(request: Request):
         school_name = form.get("school_name", "")
         block_name = form.get("block_name", "")
         designation = form.get("designation", "")
+        joining_basic = form.get("joining_basic", "")
         arrear_type = form.get("arrear_type", "both")
         hra_rates_str = form.get("hra_rates")
         da_rates_str = form.get("da_rates")
@@ -223,6 +224,8 @@ async def api_generate_arrear(request: Request):
         payslip_info["block_name"] = block_name
         if designation:
             payslip_info["designation"] = designation
+        if joining_basic:
+            payslip_info["joining_basic"] = joining_basic
         
         # Parse yearly statements
         drawn_data = {}

@@ -27,8 +27,11 @@ def compute_arrears(
     column_idx = get_designation_column_index(designation)
     
     # 2. Extract drawn basic values to find starting step
+    joining_basic_str = employee_info.get("joining_basic")
+    joining_basic = int(joining_basic_str) if joining_basic_str and str(joining_basic_str).isdigit() else None
+    
     drawn_basics = [m["basic"] for m in drawn_data.values() if m["basic"] > 0]
-    starting_step = find_starting_step(drawn_basics, column_idx)
+    starting_step = find_starting_step(drawn_basics, column_idx, joining_basic)
     
     # 3. Skip joining month if required
     # Extract month and year from DOJ

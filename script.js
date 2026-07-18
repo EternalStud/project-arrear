@@ -359,6 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const schoolName = document.getElementById("school-name").value.trim();
         const blockName = document.getElementById("block-name").value.trim();
         const designation = document.getElementById("designation") ? document.getElementById("designation").value.trim() : "";
+        const joiningBasic = document.getElementById("joining-basic") ? document.getElementById("joining-basic").value.trim() : "";
         const scopeStart = document.getElementById("scope-start") ? document.getElementById("scope-start").value : "";
         const scopeEnd = document.getElementById("scope-end") ? document.getElementById("scope-end").value : "";
         
@@ -375,6 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("school_name", schoolName);
         formData.append("block_name", blockName);
         formData.append("designation", designation);
+        formData.append("joining_basic", joiningBasic);
         formData.append("scope_start", scopeStart);
         formData.append("scope_end", scopeEnd);
         

@@ -22,12 +22,20 @@ def get_designation_column_index(designation: str) -> int:
     # Default fallback
     return 0
 
-def find_starting_step(drawn_basic_values: List[int], column_idx: int) -> int:
+def find_starting_step(drawn_basic_values: List[int], column_idx: int, joining_basic: int = None) -> int:
     """
     Finds the starting step (1-20) in the fitment matrix by matching drawn basic values
-    with the values in the specified column index.
+    or the explicitly provided joining basic with the values in the specified column index.
     """
     column_values = [FITMENT_MATRIX[step][column_idx] for step in sorted(FITMENT_MATRIX.keys())]
+    
+    if joining_basic:
+        # Check exact match for the provided joining basic
+        if joining_basic in column_values:
+            return column_values.index(joining_basic) + 1
+        # Fallback to closest match if not exact
+        closest_val = min(column_values, key=lambda x: abs(x - joining_basic))
+        return column_values.index(closest_val) + 1
     
     # Try to find a exact match in drawn basics
     for val in drawn_basic_values:
