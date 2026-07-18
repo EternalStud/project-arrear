@@ -10,16 +10,16 @@ def write_da_arrear_sheet(ws, arrear_result):
     arrear_months = arrear_result["arrear_months"]
     
     # 1. Fill Employee Metadata headers
-    ws["A3"] = f"NAME OF SCHOOL- {employee.get('school_name', '')}"
-    ws["I3"] = f"BLOCK NAME - {employee.get('block_name', '')}"
+    ws["A3"] = f"NAME OF SCHOOL- {employee.get('school_name') or ''}"
+    ws["I3"] = f"BLOCK NAME - {employee.get('block_name') or ''}"
     
-    ws["A4"] = f"NAME OF TEACHER- {employee.get('name', '')}"
-    ws["F4"] = f"DESIGNATION- {employee.get('designation', '')}"
-    ws["K4"] = f"DAYE OF JOINING- {employee.get('doj', '')}"
+    ws["A4"] = f"NAME OF TEACHER- {employee.get('name') or ''}"
+    ws["F4"] = f"DESIGNATION- {employee.get('designation') or ''}"
+    ws["K4"] = f"DAYE OF JOINING- {employee.get('doj') or ''}"
     
-    ws["A5"] = f"PRAN- {employee.get('pran', '')}"
-    ws["F5"] = f"ACCOUN NO.- {employee.get('bank_account', '')}"
-    ws["K5"] = f"IFSC - {employee.get('ifsc', '')}"
+    ws["A5"] = f"PRAN- {employee.get('pran') or ''}"
+    ws["F5"] = f"ACCOUN NO.- {employee.get('bank_account') or ''}"
+    ws["K5"] = f"IFSC - {employee.get('ifsc') or ''}"
     
     # 2. Adjust rows dynamically based on the number of arrear months
     num_months = len(arrear_months)

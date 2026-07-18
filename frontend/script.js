@@ -7,6 +7,15 @@ window.onerror = function(message, source, lineno, colno, error) {
 
 document.addEventListener("DOMContentLoaded", () => {
     // Determine API Base URL depending on where the page is hosted
+    const DEFAULT_DA_RATES = [
+        { from_month: "2023-01", to_month: "2023-12", rate_percent: 46 },
+        { from_month: "2024-01", to_month: "2024-06", rate_percent: 50 },
+        { from_month: "2024-07", to_month: "2024-12", rate_percent: 53 },
+        { from_month: "2025-01", to_month: "2025-06", rate_percent: 55 },
+        { from_month: "2025-07", to_month: "2025-12", rate_percent: 58 },
+        { from_month: "2026-01", to_month: "2026-06", rate_percent: 60 },
+    ];
+
     let API_BASE_URL = "";
     if (window.location.hostname !== "127.0.0.1" && 
         window.location.hostname !== "localhost" && 
@@ -15,34 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Files tracking object
-    const files = {
-        yearly_pdf_1: null,
-        yearly_pdf_2: null,
-        yearly_pdf_3: null,
-        payslip_pdf: null
-    };
-
-    // DOM Elements
-    const dropZones = {
-        yearly_pdf_1: document.getElementById("dz-yp1"),
-        yearly_pdf_2: document.getElementById("dz-yp2"),
-        yearly_pdf_3: document.getElementById("dz-yp3"),
-        payslip_pdf: document.getElementById("dz-ps")
-    };
-
-    const fileInputs = {
-        yearly_pdf_1: document.getElementById("file-yp1"),
-        yearly_pdf_2: document.getElementById("file-yp2"),
-        yearly_pdf_3: document.getElementById("file-yp3"),
-        payslip_pdf: document.getElementById("file-ps")
-    };
-
-    const badges = {
-        yearly_pdf_1: document.getElementById("name-yp1"),
-        yearly_pdf_2: document.getElementById("name-yp2"),
-        yearly_pdf_3: document.getElementById("name-yp3"),
-        payslip_pdf: document.getElementById("name-ps")
-    };
+    const files = {}; // key: form field name (e.g., "yearly_pdf_0"), value: File object
 
     const btnPreview = document.getElementById("btn-preview");
     const btnSubmit = document.getElementById("btn-submit");
@@ -130,59 +112,182 @@ document.addEventListener("DOMContentLoaded", () => {
     const previewInWords = document.getElementById("preview-in-words");
     const previewTableBody = document.getElementById("preview-table-body");
 
-    // Initialize Drop Zones
-    Object.keys(dropZones).forEach(key => {
-        const zone = dropZones[key];
-        const input = fileInputs[key];
-        const badge = badges[key];
+    // Dynamic Upload Slots and DA Table Logic
+    function calculateFinancialYears(startStr, endStr) {
+        const startParts = startStr.split("-");
+        const endParts = endStr.split("-");
+        const startYear = parseInt(startParts[0]);
+        const startMonth = parseInt(startParts[1]);
+        const endYear = parseInt(endParts[0]);
+        const endMonth = parseInt(endParts[1]);
+        
+        const fys = [];
+        let fyStartYear = startMonth >= 3 ? startYear : startYear - 1;
+        let fyEndYear = endMonth >= 3 ? endYear : endYear - 1;
+        
+        for (let y = fyStartYear; y <= fyEndYear; y++) {
+            fys.push({
+                label: `${y}-${String(y + 1).slice(-2)}`,
+                displayLabel: `Yearly Statement ${y}-${String(y + 1).slice(-2)}`
+            });
+        }
+        return fys;
+    }
 
-        // Click to open file browser (stopping propagation on input to prevent infinite bubbling loop)
-        input.addEventListener("click", (e) => e.stopPropagation());
-        zone.addEventListener("click", () => input.click());
-
-        // File selection handler
-        input.addEventListener("change", (e) => {
-            if (e.target.files.length > 0) {
-                handleFileSelect(key, e.target.files[0], badge);
-            }
+    function regenerateUploadSlots() {
+        const startVal = document.getElementById("scope-start").value;
+        const endVal = document.getElementById("scope-end").value;
+        const fys = calculateFinancialYears(startVal, endVal);
+        
+        document.getElementById("scope-info").textContent = 
+            `Covers ${fys.length} financial year${fys.length > 1 ? 's' : ''}: ${fys.map(f => f.label).join(", ")}`;
+        
+        const grid = document.getElementById("upload-grid");
+        grid.innerHTML = "";
+        
+        document.querySelectorAll("input[id^='file-yp-']").forEach(el => el.remove());
+        
+        Object.keys(files).forEach(k => { if (k.startsWith("yearly_pdf_")) delete files[k]; });
+        
+        fys.forEach((fy, idx) => {
+            const fieldName = `yearly_pdf_${idx}`;
+            
+            const dz = document.createElement("div");
+            dz.className = "drop-zone";
+            dz.id = `dz-yp-${idx}`;
+            dz.innerHTML = `
+                <span class="drop-zone-icon">📄</span>
+                <span class="drop-zone-title">${fy.displayLabel}</span>
+                <span class="drop-zone-desc">Drag & drop PDF or click to browse</span>
+                <div class="file-name-badge" id="name-yp-${idx}"></div>
+            `;
+            grid.appendChild(dz);
+            
+            const input = document.createElement("input");
+            input.type = "file";
+            input.name = fieldName;
+            input.id = `file-yp-${idx}`;
+            input.accept = "application/pdf";
+            input.style.cssText = "opacity: 0; position: absolute; width: 0; height: 0; pointer-events: none;";
+            grid.appendChild(input);
+            
+            setupDropZone(dz, input, fieldName, `name-yp-${idx}`);
         });
+        
+        updateButtonStates();
+    }
 
-        // Drag & Drop handlers
-        zone.addEventListener("dragover", (e) => {
+    function setupDropZone(dropZone, fileInput, fieldName, badgeId) {
+        fileInput.addEventListener("click", (e) => e.stopPropagation());
+        dropZone.addEventListener("click", (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+        
+        dropZone.addEventListener("dragover", (e) => {
             e.preventDefault();
-            zone.classList.add("dragover");
+            dropZone.classList.add("dragover");
         });
-
-        zone.addEventListener("dragleave", () => {
-            zone.classList.remove("dragover");
+        
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("dragover");
         });
-
-        zone.addEventListener("drop", (e) => {
+        
+        dropZone.addEventListener("drop", (e) => {
             e.preventDefault();
-            zone.classList.remove("dragover");
+            dropZone.classList.remove("dragover");
             if (e.dataTransfer.files.length > 0) {
-                input.files = e.dataTransfer.files; // assign to input
-                handleFileSelect(key, e.dataTransfer.files[0], badge);
+                handleFile(e.dataTransfer.files[0], fieldName, badgeId, dropZone);
             }
         });
-    });
+        
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+                handleFile(fileInput.files[0], fieldName, badgeId, dropZone);
+            }
+        });
+    }
 
-    function handleFileSelect(key, file, badge) {
+    function handleFile(file, fieldName, badgeId, dropZone) {
         if (file.type !== "application/pdf") {
             alert("Please upload a PDF file.");
             return;
         }
-        files[key] = file;
-        badge.textContent = file.name;
-        badge.style.display = "block";
-        checkFilesReady();
+        files[fieldName] = file;
+        const badge = document.getElementById(badgeId);
+        if (badge) {
+            badge.textContent = file.name;
+            badge.style.display = "block";
+        }
+        dropZone.classList.add("file-loaded");
+        updateButtonStates();
     }
 
-    function checkFilesReady() {
-        const allUploaded = Object.values(files).every(file => file !== null);
-        btnPreview.disabled = !allUploaded;
-        btnSubmit.disabled = !allUploaded;
+    function updateButtonStates() {
+        const yearlySlots = document.querySelectorAll("[id^='dz-yp-']");
+        const yearlyCount = yearlySlots.length;
+        let yearlyFilled = 0;
+        for (let i = 0; i < yearlyCount; i++) {
+            if (files[`yearly_pdf_${i}`]) yearlyFilled++;
+        }
+        const hasPayslip = !!files["payslip_pdf"];
+        const allReady = yearlyFilled === yearlyCount && hasPayslip && yearlyCount > 0;
+        
+        btnPreview.disabled = !allReady;
+        btnSubmit.disabled = !allReady;
     }
+
+    function initDaTable() {
+        const tbody = document.getElementById("da-table-body");
+        tbody.innerHTML = "";
+        DEFAULT_DA_RATES.forEach(rate => {
+            addDaRow(rate.from_month, rate.to_month, rate.rate_percent);
+        });
+    }
+
+    function addDaRow(from = "", to = "", rate = "") {
+        const tbody = document.getElementById("da-table-body");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="month" value="${from}" class="da-from"></td>
+            <td><input type="month" value="${to}" class="da-to"></td>
+            <td><input type="number" value="${rate}" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 46"></td>
+            <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
+        `;
+        row.querySelector(".da-remove").addEventListener("click", () => row.remove());
+        tbody.appendChild(row);
+    }
+
+    function getDaRatesData() {
+        const list = [];
+        document.querySelectorAll("#da-table-body tr").forEach(row => {
+            const from = row.querySelector(".da-from").value;
+            const to = row.querySelector(".da-to").value;
+            const rate = parseFloat(row.querySelector(".da-rate").value);
+            if (from && to && !isNaN(rate)) {
+                list.push({ from_month: from, to_month: to, rate_percent: rate });
+            }
+        });
+        return list;
+    }
+
+    document.getElementById("btn-add-da").addEventListener("click", () => addDaRow());
+    document.getElementById("da-presets").addEventListener("change", (e) => {
+        if (e.target.value === "standard") {
+            initDaTable();
+        } else {
+            document.getElementById("da-table-body").innerHTML = "";
+            addDaRow();
+        }
+    });
+
+    document.getElementById("scope-start").addEventListener("change", regenerateUploadSlots);
+    document.getElementById("scope-end").addEventListener("change", regenerateUploadSlots);
+
+    // Initial setups
+    initDaTable();
+    setupDropZone(document.getElementById("dz-ps"), document.getElementById("file-ps"), "payslip_pdf", "name-ps");
+    regenerateUploadSlots();
 
     // Dynamic HRA Table Operations
     function createHraRow(fromVal = "", toVal = "", rateVal = "") {
@@ -256,6 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const hraData = getHraRatesData();
         formData.append("hra_rates", JSON.stringify(hraData));
+        formData.append("da_rates", JSON.stringify(getDaRatesData()));
         
         btnPreview.textContent = "🔄 Parsing...";
         btnPreview.disabled = true;
@@ -297,6 +403,16 @@ document.addEventListener("DOMContentLoaded", () => {
             previewStep.style.display = "block";
         } else {
             previewStep.style.display = "none";
+        }
+
+        const fitmentBadge = document.getElementById("fitment-badge");
+        if (data.fitment_info) {
+            document.getElementById("fitment-step").textContent = data.fitment_info.starting_step;
+            document.getElementById("fitment-category").textContent = data.fitment_info.designation_category;
+            document.getElementById("fitment-basic").textContent = "₹" + (data.fitment_info.basic_at_step || 0).toLocaleString("en-IN");
+            fitmentBadge.style.display = "block";
+        } else {
+            fitmentBadge.style.display = "none";
         }
         
         previewDoj.textContent = emp.doj || "N/A";
@@ -386,6 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const hraData = getHraRatesData();
         formData.append("hra_rates", JSON.stringify(hraData));
+        formData.append("da_rates", JSON.stringify(getDaRatesData()));
         
         const typeEl = document.querySelector('input[name="arrear_type"]:checked');
         formData.append("arrear_type", typeEl ? typeEl.value : "both");
@@ -424,7 +541,6 @@ document.addEventListener("DOMContentLoaded", () => {
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(downloadUrl);
-            
             finishProgressBar("Excel file generated successfully! Downloading...");
             
             // Trigger donation modal

@@ -9,7 +9,7 @@ def get_designation_column_index(designation: str) -> int:
     Defaults to 0 (I-V) if designation not found.
     """
     # Clean designation string to make match robust
-    cleaned = designation.strip()
+    cleaned = (designation or "").strip()
     # Check exact match
     if cleaned in DESIGNATION_COLUMN_MAP:
         return DESIGNATION_COLUMN_MAP[cleaned]

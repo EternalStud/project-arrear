@@ -5,18 +5,25 @@ from datetime import date
 from app.config import DA_RATES, MA_FIXED, GIS_FIXED, MONTH_TO_NUM
 from app.models.monthly_salary import MonthlySalary
 
-def get_da_rate_for_date(year: int, month: int) -> float:
+def get_da_rate_for_date(year: int, month: int, da_rates: List[Dict[str, Any]] = None) -> float:
     """
     Looks up the DA rate for a given calendar month and year from the DA schedule.
     Defaults to the last rate in the schedule if date is beyond the schedule.
     """
     date_str = f"{year}-{month:02d}"
-    for entry in DA_RATES:
+    rates = da_rates if da_rates else DA_RATES
+    for entry in rates:
         if entry["from"] <= date_str <= entry["to"]:
-            return entry["rate"]
+            rate = entry["rate"]
+            if da_rates and rate > 1:
+                return rate / 100.0
+            return rate
     
     # Fallback to the latest known rate
-    return DA_RATES[-1]["rate"]
+    rate = rates[-1]["rate"]
+    if da_rates and rate > 1:
+        return rate / 100.0
+    return rate
 
 def get_hra_rate_for_date(hra_rules: List[Dict[str, Any]], year: int, month: int) -> float:
     """
@@ -69,7 +76,8 @@ def calculate_admissible_for_month(
     financial_year: str,
     standard_basic_rate: int,
     hra_rules: List[Dict[str, Any]],
-    pro_ration_ratio: float = 1.0
+    pro_ration_ratio: float = 1.0,
+    da_rates: List[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Calculates admissible salary components for a given month.
@@ -79,7 +87,7 @@ def calculate_admissible_for_month(
     _, total_days = calendar.monthrange(year, month_num)
     
     # 1. Get rates
-    da_rate = get_da_rate_for_date(year, month_num)
+    da_rate = get_da_rate_for_date(year, month_num, da_rates=da_rates)
     hra_rate = get_hra_rate_for_date(hra_rules, year, month_num)
     
     # 2. Calculate standard rates

@@ -694,6 +694,85 @@ header h1 {
     box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
+/* Arrear Scope Section */
+.scope-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.scope-selector {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.scope-arrow {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.scope-info {
+    font-size: 0.82rem;
+    color: var(--accent-color);
+    padding: 8px 12px;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+input[type="month"] {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    width: 100%;
+}
+
+input[type="month"]:focus {
+    border-color: var(--accent-color);
+}
+
+/* Fitment Badge */
+.fitment-badge {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+}
+
+.fitment-header {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #10b981;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fitment-details {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.fitment-item {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
+
+.fitment-item strong {
+    color: #ffffff;
+}
+
 /* Footer Styling */
 footer {
     text-align: center;
@@ -863,6 +942,20 @@ footer .heart {
     
     .emp-badge {
         margin-left: 0;
+    }
+
+    .scope-selector {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .scope-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .fitment-details {
+        flex-direction: column;
+        gap: 6px;
     }
 }
 

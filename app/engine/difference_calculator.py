@@ -1,5 +1,5 @@
 # difference_calculator.py - Logic for computing the difference (ADMISSIBLE - DRAWN)
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from app.models.monthly_salary import MonthlySalary
 from app.config import FITMENT_MATRIX
 from app.engine.increment_calculator import get_admissible_basic, get_designation_column_index, find_starting_step
@@ -11,14 +11,15 @@ def compute_arrears(
     drawn_data: Dict[str, Dict[str, Any]],
     employee_info: Dict[str, Any],
     hra_rules: List[Dict[str, Any]],
-    skip_joining_month: bool = True
+    skip_joining_month: bool = True,
+    da_rates: Optional[List[Dict[str, Any]]] = None
 ) -> Dict[str, Any]:
     """
     Computes differences for all months in drawn_data, detects months needing arrears,
     and returns a structured response with differences, totals, and words.
     """
-    doj_str = employee_info.get("doj")
-    designation = employee_info.get("designation", "")
+    doj_str = employee_info.get("doj") or ""
+    designation = employee_info.get("designation") or ""
     
     # 1. Map designation to column index
     column_idx = get_designation_column_index(designation)
@@ -83,7 +84,8 @@ def compute_arrears(
             financial_year=drawn["financial_year"],
             standard_basic_rate=std_basic_rate,
             hra_rules=hra_rules,
-            pro_ration_ratio=ratio
+            pro_ration_ratio=ratio,
+            da_rates=da_rates
         )
         
     # 5. Post-process PT for September
@@ -146,6 +148,11 @@ def compute_arrears(
         "employee": employee_info,
         "starting_step": starting_step,
         "designation_category": get_designation_category_name(column_idx),
+        "fitment_info": {
+            "starting_step": starting_step,
+            "designation_category": get_designation_category_name(column_idx),
+            "basic_at_step": FITMENT_MATRIX[starting_step][column_idx]
+        },
         "arrear_months": arrear_months,
         "totals": totals,
         "in_words": in_words

@@ -4,7 +4,7 @@ import tempfile
 import json
 import asyncio
 from typing import List, Optional
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -47,13 +47,7 @@ def shutil_copy_fileobj(fsrc, fdst, length=16*1024):
         fdst.write(buf)
 
 @app.post("/api/parse-preview")
-async def api_parse_preview(
-    yearly_pdf_1: UploadFile = File(...),
-    yearly_pdf_2: UploadFile = File(...),
-    yearly_pdf_3: UploadFile = File(...),
-    payslip_pdf: UploadFile = File(...),
-    hra_rates: Optional[str] = Form(None)
-):
+async def api_parse_preview(request: Request):
     try:
         # Wait for up to 60 seconds to acquire the semaphore
         await asyncio.wait_for(semaphore.acquire(), timeout=60.0)
@@ -65,42 +59,50 @@ async def api_parse_preview(
 
     temp_files = []
     try:
-        # Save files to temp paths
-        path_yp1 = save_upload_file_temp(yearly_pdf_1)
-        temp_files.append(path_yp1)
-        path_yp2 = save_upload_file_temp(yearly_pdf_2)
-        temp_files.append(path_yp2)
-        path_yp3 = save_upload_file_temp(yearly_pdf_3)
-        temp_files.append(path_yp3)
-        path_ps = save_upload_file_temp(payslip_pdf)
+        form = await request.form()
+        
+        payslip_file = form.get("payslip_pdf")
+        if not payslip_file:
+            raise HTTPException(status_code=400, detail="Pay Slip PDF is required.")
+            
+        yearly_files = []
+        for i in range(10):
+            f = form.get(f"yearly_pdf_{i}")
+            if f:
+                yearly_files.append(f)
+        if not yearly_files:
+            raise HTTPException(status_code=400, detail="At least one Yearly Statement PDF is required.")
+            
+        hra_rates = form.get("hra_rates")
+        da_rates_str = form.get("da_rates")
+        
+        # Save payslip
+        path_ps = save_upload_file_temp(payslip_file)
         temp_files.append(path_ps)
         
         # Parse payslip
-        payslip_info = parse_payslip(path_ps)
-        
+        try:
+            payslip_info = parse_payslip(path_ps)
+        except Exception as parse_err:
+            payslip_info = {"name": None, "designation": None, "doj": None, "pran": None, "bank_account": None, "ifsc": None, "pan": None}
+            
         # Parse yearly statements
-        yp1_data = parse_yearly_payment(path_yp1)
-        yp2_data = parse_yearly_payment(path_yp2)
-        yp3_data = parse_yearly_payment(path_yp3)
-        
-        # Combine drawn data
         drawn_data = {}
-        drawn_data.update(yp1_data["monthly_data"])
-        drawn_data.update(yp2_data["monthly_data"])
-        drawn_data.update(yp3_data["monthly_data"])
-        
-        # Verify employee consistency (names or IDs match)
-        prans = {payslip_info.get("pran"), yp1_data["employee"].get("pran"), 
-                 yp2_data["employee"].get("pran"), yp3_data["employee"].get("pran")}
+        prans = {payslip_info.get("pran")}
+        for yf in yearly_files:
+            path = save_upload_file_temp(yf)
+            temp_files.append(path)
+            yp_data = parse_yearly_payment(path)
+            drawn_data.update(yp_data["monthly_data"])
+            prans.add(yp_data["employee"].get("pran"))
+            
         prans = {p for p in prans if p}
         
         if len(prans) > 1:
-            # Warning of potential mismatch
             warning = f"Warning: Multiple PRANs detected ({', '.join(prans)}). Ensure PDFs are for the same employee."
         else:
             warning = None
             
-        # Detect drawn HRA rate from payslip to suggest preset
         try:
             sample_month = list(drawn_data.values())[0] if drawn_data else None
             if sample_month and sample_month["basic"] > 0:
@@ -109,6 +111,12 @@ async def api_parse_preview(
                 drawn_hra_rate = 0.04
         except Exception:
             drawn_hra_rate = 0.04
+            
+        da_rates = None
+        if da_rates_str:
+            try:
+                da_rates = json.loads(da_rates_str)
+            except: pass
             
         response_content = {
             "success": True,
@@ -120,7 +128,6 @@ async def api_parse_preview(
             }
         }
         
-        # If hra_rates is provided, calculate arrears and add to preview
         if hra_rates:
             try:
                 hra_rules = json.loads(hra_rates)
@@ -128,13 +135,16 @@ async def api_parse_preview(
                     drawn_data=drawn_data,
                     employee_info=payslip_info,
                     hra_rules=hra_rules,
-                    skip_joining_month=True
+                    skip_joining_month=True,
+                    da_rates=da_rates
                 )
                 response_content["arrear_months"] = result["arrear_months"]
                 response_content["totals"] = result["totals"]
                 response_content["in_words"] = result["in_words"]
                 response_content["starting_step"] = result["starting_step"]
                 response_content["designation_category"] = result["designation_category"]
+                if "fitment_info" in result:
+                    response_content["fitment_info"] = result["fitment_info"]
             except Exception as e:
                 response_content["drawn_summary"]["warning"] = f"Arrear preview failed: {str(e)}"
                 
@@ -153,16 +163,7 @@ async def api_parse_preview(
                 os.remove(path)
 
 @app.post("/api/generate-arrear")
-async def api_generate_arrear(
-    yearly_pdf_1: UploadFile = File(...),
-    yearly_pdf_2: UploadFile = File(...),
-    yearly_pdf_3: UploadFile = File(...),
-    payslip_pdf: UploadFile = File(...),
-    school_name: str = Form(...),
-    block_name: str = Form(...),
-    hra_rates: str = Form(...), # JSON string containing List[Dict[str, Any]]
-    arrear_type: str = Form("both") # "salary", "da", "both"
-):
+async def api_generate_arrear(request: Request):
     try:
         # Wait for up to 60 seconds to acquire the semaphore
         await asyncio.wait_for(semaphore.acquire(), timeout=60.0)
@@ -174,44 +175,65 @@ async def api_generate_arrear(
 
     temp_files = []
     try:
-        # Parse HRA rules
+        form = await request.form()
+        
+        payslip_file = form.get("payslip_pdf")
+        if not payslip_file:
+            raise HTTPException(status_code=400, detail="Pay Slip PDF is required.")
+            
+        yearly_files = []
+        for i in range(10):
+            f = form.get(f"yearly_pdf_{i}")
+            if f:
+                yearly_files.append(f)
+        if not yearly_files:
+            raise HTTPException(status_code=400, detail="At least one Yearly Statement PDF is required.")
+            
+        school_name = form.get("school_name", "")
+        block_name = form.get("block_name", "")
+        arrear_type = form.get("arrear_type", "both")
+        hra_rates_str = form.get("hra_rates")
+        da_rates_str = form.get("da_rates")
+        
         try:
-            hra_rules = json.loads(hra_rates)
+            hra_rules = json.loads(hra_rates_str) if hra_rates_str else []
         except Exception:
             raise HTTPException(status_code=400, detail="Invalid HRA rules format. Must be a valid JSON array.")
             
-        # Save files to temp paths
-        path_yp1 = save_upload_file_temp(yearly_pdf_1)
-        temp_files.append(path_yp1)
-        path_yp2 = save_upload_file_temp(yearly_pdf_2)
-        temp_files.append(path_yp2)
-        path_yp3 = save_upload_file_temp(yearly_pdf_3)
-        temp_files.append(path_yp3)
-        path_ps = save_upload_file_temp(payslip_pdf)
+        da_rates = None
+        if da_rates_str:
+            try:
+                da_rates = json.loads(da_rates_str)
+            except: pass
+            
+        # Save payslip
+        path_ps = save_upload_file_temp(payslip_file)
         temp_files.append(path_ps)
         
         # Parse payslip
-        payslip_info = parse_payslip(path_ps)
+        try:
+            payslip_info = parse_payslip(path_ps)
+        except Exception as parse_err:
+            payslip_info = {"name": None, "designation": None, "doj": None, "pran": None, "bank_account": None, "ifsc": None, "pan": None}
+            
         payslip_info["school_name"] = school_name
         payslip_info["block_name"] = block_name
         
         # Parse yearly statements
-        yp1_data = parse_yearly_payment(path_yp1)
-        yp2_data = parse_yearly_payment(path_yp2)
-        yp3_data = parse_yearly_payment(path_yp3)
-        
-        # Combine drawn data
         drawn_data = {}
-        drawn_data.update(yp1_data["monthly_data"])
-        drawn_data.update(yp2_data["monthly_data"])
-        drawn_data.update(yp3_data["monthly_data"])
+        for yf in yearly_files:
+            path = save_upload_file_temp(yf)
+            temp_files.append(path)
+            yp_data = parse_yearly_payment(path)
+            drawn_data.update(yp_data["monthly_data"])
         
         # Compute Arrears
         result = compute_arrears(
             drawn_data=drawn_data,
             employee_info=payslip_info,
             hra_rules=hra_rules,
-            skip_joining_month=True
+            skip_joining_month=True,
+            da_rates=da_rates
         )
         
         # Load Template
@@ -241,8 +263,8 @@ async def api_generate_arrear(
         wb.save(output_path)
         
         # Determine download filename
-        safe_name = "".join(c for c in payslip_info.get("name", "Arrear") if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
-        pran = payslip_info.get("pran", "Form")
+        safe_name = "".join(c for c in (payslip_info.get("name") or "Arrear") if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
+        pran = payslip_info.get("pran") or "Form"
         filename = f"DPO_Arrear_{safe_name}_{pran}.xlsx"
         
         return FileResponse(
