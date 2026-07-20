@@ -73,23 +73,22 @@ def write_salary_arrear_sheet(ws, arrear_result):
         else:
             ws.cell(row=r, column=18, value=f"=O{r}-P{r}-Q{r}")
             
-        # Columns S-Z: Difference (using formulas)
-        ws.cell(row=r, column=19, value=f"=C{r}-K{r}") # Basic diff
-        ws.cell(row=r, column=20, value=f"=D{r}-L{r}") # DA diff
-        ws.cell(row=r, column=21, value=f"=E{r}-M{r}") # HRA diff
-        ws.cell(row=r, column=22, value=f"=F{r}-N{r}") # MA diff
-        ws.cell(row=r, column=23, value=f"=G{r}-O{r}") # Gross diff
-        ws.cell(row=r, column=24, value=f"=H{r}-P{r}") # NPS diff
-        ws.cell(row=r, column=25, value=f"=I{r}-Q{r}") # GIS diff
-        
+        # Column S: Paid Arrear (Column 19)
         arrear_drawn = drn.get("arrear_drawn", 0)
-        if arrear_drawn > 0:
-            ws.cell(row=r, column=26, value=f"=J{r}-R{r}-{arrear_drawn}")
-        else:
-            ws.cell(row=r, column=26, value=f"=J{r}-R{r}")
+        ws.cell(row=r, column=19, value=arrear_drawn)
+        
+        # Columns T-AA: Difference (using formulas)
+        ws.cell(row=r, column=20, value=f"=C{r}-K{r}") # Basic diff
+        ws.cell(row=r, column=21, value=f"=D{r}-L{r}") # DA diff
+        ws.cell(row=r, column=22, value=f"=E{r}-M{r}") # HRA diff
+        ws.cell(row=r, column=23, value=f"=F{r}-N{r}") # MA diff
+        ws.cell(row=r, column=24, value=f"=G{r}-O{r}") # Gross diff
+        ws.cell(row=r, column=25, value=f"=H{r}-P{r}") # NPS diff
+        ws.cell(row=r, column=26, value=f"=I{r}-Q{r}") # GIS diff
+        ws.cell(row=r, column=27, value=f"=J{r}-R{r}-S{r}") # Net diff = Admissible Net - Drawn Net - Paid Arrear
         
     # 4. Write SUM formulas to the G.TOTAL row
-    sum_cols = [get_column_letter(c) for c in range(3, 27)] # Columns C to Z
+    sum_cols = [get_column_letter(c) for c in range(3, 28)] # Columns C to AA
     format_total_row_formulas(ws, total_row_idx, start_row=start_row, cols_range=sum_cols)
     
     # 5. Write Net total in words in cell C22 (shifted to total_row_idx + 1)
@@ -106,6 +105,6 @@ def write_salary_arrear_sheet(ws, arrear_result):
     cell_ts.alignment = Alignment(horizontal="center", vertical="center", wrap_text=False)
     cell_ts.font = Font(name="Arial", size=10, bold=True)
     
-    cell_hm = ws[f"R{sig_row}"]
+    cell_hm = ws[f"S{sig_row}"]
     cell_hm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=False)
     cell_hm.font = Font(name="Arial", size=10, bold=True)

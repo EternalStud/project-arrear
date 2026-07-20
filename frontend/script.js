@@ -463,4 +463,36 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // User Guide Modal Handlers
+    const guideModal = document.getElementById("user-guide-modal");
+    const btnOpenGuide = document.getElementById("btn-open-guide");
+    const btnCloseGuide = document.getElementById("btn-close-guide");
+    const btnGuideOk = document.getElementById("btn-guide-ok");
+
+    if (btnOpenGuide && guideModal) {
+        btnOpenGuide.addEventListener("click", () => {
+            guideModal.style.display = "flex";
+        });
+    }
+
+    if (btnCloseGuide && guideModal) {
+        btnCloseGuide.addEventListener("click", () => {
+            guideModal.style.display = "none";
+        });
+    }
+
+    if (btnGuideOk && guideModal) {
+        btnGuideOk.addEventListener("click", () => {
+            guideModal.style.display = "none";
+        });
+    }
+
+    if (guideModal) {
+        guideModal.addEventListener("click", (e) => {
+            if (e.target === guideModal) {
+                guideModal.style.display = "none";
+            }
+        });
+    }
 });
