@@ -128,6 +128,7 @@ def compute_arrears(
     for month_lbl in sorted_months:
         adm = admissible_months[month_lbl]
         drn = drawn_data[month_lbl]
+        arrear_drawn = drn.get("arrear_drawn", 0)
         
         diff = {
             "basic": adm["basic"] - drn["basic"],
@@ -138,12 +139,13 @@ def compute_arrears(
             "nps": adm["nps"] - drn["nps"],
             "gis": adm["gis"] - drn["gis"],
             "professional_tax": adm["professional_tax"] - drn["professional_tax"],
-            "net": adm["net"] - drn["net"]
+            "arrear_drawn": arrear_drawn,
+            "net": (adm["net"] - drn["net"]) - arrear_drawn
         }
         
         # If there's any difference, keep this month
-        # Note: sometimes only HRA or DA is different, which is valid.
-        if any(abs(v) > 0 for v in [diff["basic"], diff["da"], diff["hra"], diff["net"]]):
+        # Note: sometimes only HRA or DA is different, or arrear_drawn is present, which is valid.
+        if any(abs(v) > 0 for v in [diff["basic"], diff["da"], diff["hra"], diff["net"], arrear_drawn]):
             arrear_months.append({
                 "month_label": month_lbl,
                 "admissible": adm,

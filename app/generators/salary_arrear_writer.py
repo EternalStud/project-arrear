@@ -81,7 +81,12 @@ def write_salary_arrear_sheet(ws, arrear_result):
         ws.cell(row=r, column=23, value=f"=G{r}-O{r}") # Gross diff
         ws.cell(row=r, column=24, value=f"=H{r}-P{r}") # NPS diff
         ws.cell(row=r, column=25, value=f"=I{r}-Q{r}") # GIS diff
-        ws.cell(row=r, column=26, value=f"=J{r}-R{r}") # Net diff
+        
+        arrear_drawn = drn.get("arrear_drawn", 0)
+        if arrear_drawn > 0:
+            ws.cell(row=r, column=26, value=f"=J{r}-R{r}-{arrear_drawn}")
+        else:
+            ws.cell(row=r, column=26, value=f"=J{r}-R{r}")
         
     # 4. Write SUM formulas to the G.TOTAL row
     sum_cols = [get_column_letter(c) for c in range(3, 27)] # Columns C to Z

@@ -56,7 +56,12 @@ def write_da_arrear_sheet(ws, arrear_result):
         ws.cell(row=r, column=14, value=f"=D{r}-I{r}") # DA diff
         ws.cell(row=r, column=15, value=f"=E{r}-J{r}") # Gross diff
         ws.cell(row=r, column=16, value=f"=F{r}-K{r}") # NPS diff
-        ws.cell(row=r, column=17, value=f"=G{r}-L{r}") # Net diff
+        
+        arrear_drawn = drn.get("arrear_drawn", 0)
+        if arrear_drawn > 0:
+            ws.cell(row=r, column=17, value=f"=G{r}-L{r}-{arrear_drawn}")
+        else:
+            ws.cell(row=r, column=17, value=f"=G{r}-L{r}")
         
     # 4. Write SUM formulas to the G.TOTAL row
     sum_cols = [get_column_letter(c) for c in range(3, 18)] # Columns C to Q

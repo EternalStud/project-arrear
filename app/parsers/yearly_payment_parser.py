@@ -121,7 +121,8 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                 "nps": 0,
                 "gis": 0,
                 "professional_tax": 0,
-                "net": 0
+                "net": 0,
+                "arrear_drawn": 0
             }
             
         # 3. Extract salary components from all tables
@@ -140,6 +141,9 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
         
         # We will loop through all tables and search for rows matching these keys
         for page in pdf.pages:
+            page_text = (page.extract_text() or "").lower()
+            is_other_detail_page = "other payment detail" in page_text or "other bill" in page_text
+            
             tables = page.extract_tables()
             for table in tables:
                 for row in table:
@@ -150,22 +154,34 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                         continue
                     row_name_clean = re.sub(r'\s+', ' ', row_name).strip().lower()
                     
-                    # Match row name to a component
-                    matched_key = None
-                    for key, keywords in row_mappings.items():
-                        if any(kw in row_name_clean for kw in keywords):
-                            matched_key = key
-                            break
-                            
-                    if matched_key:
-                        for col_idx, info in month_mappings.items():
-                            if col_idx < len(row):
-                                val_str = row[col_idx]
-                                if val_str is not None:
-                                    # Remove commas or spaces, extract integer
-                                    val_clean = re.sub(r'[^\d]', '', val_str)
-                                    val = int(val_clean) if val_clean else 0
-                                    monthly_data[info["month_label"]][matched_key] = val
+                    if is_other_detail_page:
+                        # Extract arrear drawn from Other Payment Detail section
+                        if "total other" in row_name_clean or "net" in row_name_clean:
+                            for col_idx, info in month_mappings.items():
+                                if col_idx < len(row):
+                                    val_str = row[col_idx]
+                                    if val_str is not None:
+                                        val_clean = re.sub(r'[^\d]', '', val_str)
+                                        val = int(val_clean) if val_clean else 0
+                                        if val > 0:
+                                            monthly_data[info["month_label"]]["arrear_drawn"] = val
+                    else:
+                        # Regular PayBill components
+                        matched_key = None
+                        for key, keywords in row_mappings.items():
+                            if any(kw in row_name_clean for kw in keywords):
+                                matched_key = key
+                                break
+                                
+                        if matched_key:
+                            for col_idx, info in month_mappings.items():
+                                if col_idx < len(row):
+                                    val_str = row[col_idx]
+                                    if val_str is not None:
+                                        # Remove commas or spaces, extract integer
+                                        val_clean = re.sub(r'[^\d]', '', val_str)
+                                        val = int(val_clean) if val_clean else 0
+                                        monthly_data[info["month_label"]][matched_key] = val
 
     # Verify if gross or net is zero for some months, meaning they didn't get paid (we shouldn't process them)
     filtered_monthly_data = {}
