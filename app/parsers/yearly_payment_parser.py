@@ -155,6 +155,16 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                     row_name_clean = re.sub(r'\s+', ' ', row_name).strip().lower()
                     
                     if is_other_detail_page:
+                        # Detect arrear component (da, basic, hra) from table context
+                        arr_comp = "da"
+                        table_str = str(table).lower()
+                        if "da" in table_str or "dearness" in table_str:
+                            arr_comp = "da"
+                        elif "salary" in table_str or "basic" in table_str:
+                            arr_comp = "basic"
+                        elif "hra" in table_str or "house rent" in table_str:
+                            arr_comp = "hra"
+                            
                         # Extract arrear drawn, gross, and nps from Other Payment Detail section
                         for col_idx, info in month_mappings.items():
                             if col_idx < len(row):
@@ -163,6 +173,7 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                                     val_clean = re.sub(r'[^\d]', '', val_str)
                                     val = int(val_clean) if val_clean else 0
                                     if val > 0:
+                                        monthly_data[info["month_label"]]["arrear_component"] = arr_comp
                                         if "gross" in row_name_clean:
                                             monthly_data[info["month_label"]]["arrear_gross"] = val
                                         elif "deduction" in row_name_clean or "nps" in row_name_clean:

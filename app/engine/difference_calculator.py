@@ -160,22 +160,29 @@ def compute_arrears(
             arr_gross = drn.get("arrear_gross", arrear_val)
             arr_nps = drn.get("arrear_nps", 0)
             arr_net = drn.get("arrear_net", arrear_val)
+            arr_comp = drn.get("arrear_component", "da")
+            
+            arr_basic = arr_gross if arr_comp == "basic" else 0
+            arr_da = arr_gross if arr_comp == "da" else 0
+            arr_hra = arr_gross if arr_comp == "hra" else 0
             
             arr_adm = {
                 "days": 0, "basic": 0, "da": 0, "hra": 0, "ma": 0,
                 "gross": 0, "nps": 0, "gis": 0, "professional_tax": 0, "net": 0
             }
             arr_drn = {
-                "days": 0, "basic": arr_gross, "da": 0, "hra": 0, "ma": 0,
+                "days": 0, "basic": arr_basic, "da": arr_da, "hra": arr_hra, "ma": 0,
                 "gross": arr_gross, "nps": arr_nps, "gis": 0, "professional_tax": 0, "net": arr_net
             }
             arr_diff = {
-                "basic": -arr_gross, "da": 0, "hra": 0, "ma": 0,
+                "basic": -arr_basic, "da": -arr_da, "hra": -arr_hra, "ma": 0,
                 "gross": -arr_gross, "nps": -arr_nps, "gis": 0, "professional_tax": 0, "net": -arr_net
             }
             
+            comp_label = "DA Arrear" if arr_comp == "da" else ("Salary Arrear" if arr_comp == "basic" else "Arrear")
+            
             arrear_months.append({
-                "month_label": f"{month_lbl} (Arrear)",
+                "month_label": f"{month_lbl} ({comp_label})",
                 "admissible": arr_adm,
                 "drawn": arr_drn,
                 "difference": arr_diff,
