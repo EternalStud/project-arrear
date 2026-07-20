@@ -141,18 +141,17 @@ def compute_arrears(
             "net": adm["net"] - drn["net"]
         }
         
-        # If there's any difference, keep this regular month row
-        if any(abs(v) > 0 for v in [diff["basic"], diff["da"], diff["hra"], diff["net"]]):
-            arrear_months.append({
-                "month_label": month_lbl,
-                "admissible": adm,
-                "drawn": drn,
-                "difference": diff,
-                "is_arrear_row": False
-            })
-            
-            for key in totals.keys():
-                totals[key] += diff[key]
+        # Always include every month in the arrear scope sequentially (even if diff is 0)
+        arrear_months.append({
+            "month_label": month_lbl,
+            "admissible": adm,
+            "drawn": drn,
+            "difference": diff,
+            "is_arrear_row": False
+        })
+        
+        for key in totals.keys():
+            totals[key] += diff[key]
                 
         # If the employee drew an arrear bill in this month, add a dedicated Arrear Row right after
         arrear_val = drn.get("arrear_drawn", 0) or drn.get("arrear_net", 0)
