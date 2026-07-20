@@ -1,5 +1,5 @@
-# salary_arrear_writer.py - Writer for Salary Arrear Format sheet
 from openpyxl.utils import get_column_letter
+from openpyxl.styles import Font, Alignment
 from app.generators.template_manager import adjust_rows_in_sheet, format_total_row_formulas
 
 def write_salary_arrear_sheet(ws, arrear_result):
@@ -17,7 +17,7 @@ def write_salary_arrear_sheet(ws, arrear_result):
     
     ws["A4"] = f"NAME OF TEACHER- {employee.get('name') or ''}"
     ws["I4"] = f"DESIGNATION- {employee.get('designation') or ''}"
-    ws["Q4"] = f"DAYE OF JOINING- {employee.get('doj') or ''}"
+    ws["Q4"] = f"DATE OF JOINING- {employee.get('doj') or ''}"
     
     ws["A5"] = f"PRAN- {employee.get('pran') or ''}"
     ws["I5"] = f"ACCOUN NO.- {employee.get('bank_account') or ''}"
@@ -90,3 +90,17 @@ def write_salary_arrear_sheet(ws, arrear_result):
     # 5. Write Net total in words in cell C22 (shifted to total_row_idx + 1)
     in_words_row = total_row_idx + 1
     ws[f"C{in_words_row}"] = f"IN WORDS: {in_words}"
+    ws.row_dimensions[in_words_row].height = 22.0
+    ws[f"C{in_words_row}"].font = Font(name="Arial", size=10, bold=True)
+    
+    # 6. Format Signature & Seal row height & alignment (shifted to total_row_idx + 3)
+    sig_row = total_row_idx + 3
+    ws.row_dimensions[sig_row].height = 45.0
+    
+    cell_ts = ws[f"A{sig_row}"]
+    cell_ts.alignment = Alignment(horizontal="center", vertical="center", wrap_text=False)
+    cell_ts.font = Font(name="Arial", size=10, bold=True)
+    
+    cell_hm = ws[f"R{sig_row}"]
+    cell_hm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=False)
+    cell_hm.font = Font(name="Arial", size=10, bold=True)

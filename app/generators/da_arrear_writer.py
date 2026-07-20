@@ -1,5 +1,5 @@
-# da_arrear_writer.py - Writer for DA Arrear Format sheet
 from openpyxl.utils import get_column_letter
+from openpyxl.styles import Font, Alignment
 from app.generators.template_manager import adjust_rows_in_sheet, format_total_row_formulas
 
 def write_da_arrear_sheet(ws, arrear_result):
@@ -15,7 +15,7 @@ def write_da_arrear_sheet(ws, arrear_result):
     
     ws["A4"] = f"NAME OF TEACHER- {employee.get('name') or ''}"
     ws["F4"] = f"DESIGNATION- {employee.get('designation') or ''}"
-    ws["K4"] = f"DAYE OF JOINING- {employee.get('doj') or ''}"
+    ws["K4"] = f"DATE OF JOINING- {employee.get('doj') or ''}"
     
     ws["A5"] = f"PRAN- {employee.get('pran') or ''}"
     ws["F5"] = f"ACCOUN NO.- {employee.get('bank_account') or ''}"
@@ -61,3 +61,15 @@ def write_da_arrear_sheet(ws, arrear_result):
     # 4. Write SUM formulas to the G.TOTAL row
     sum_cols = [get_column_letter(c) for c in range(3, 18)] # Columns C to Q
     format_total_row_formulas(ws, total_row_idx, start_row=start_row, cols_range=sum_cols)
+    
+    # 5. Format Signature & Seal row height & alignment (shifted to total_row_idx + 2)
+    sig_row = total_row_idx + 2
+    ws.row_dimensions[sig_row].height = 45.0
+    
+    cell_ts = ws[f"A{sig_row}"]
+    cell_ts.alignment = Alignment(horizontal="center", vertical="center", wrap_text=False)
+    cell_ts.font = Font(name="Arial", size=10, bold=True)
+    
+    cell_hm = ws[f"L{sig_row}"]
+    cell_hm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=False)
+    cell_hm.font = Font(name="Arial", size=10, bold=True)
