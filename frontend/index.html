@@ -20,7 +20,7 @@
             </div>
             <p class="subtitle">Teacher Salary & DA Arrear Form Generator</p>
             <div style="margin-top: 12px;">
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-open-guide" style="border-radius: 20px; padding: 6px 16px; display: inline-flex; align-items: center; gap: 6px;">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-open-guide" onclick="document.getElementById('user-guide-modal').style.display='flex'" style="border-radius: 20px; padding: 6px 16px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
                     📖 User Guide & Instructions
                 </button>
             </div>
@@ -220,7 +220,7 @@
     <!-- User Guide Modal -->
     <div id="user-guide-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content guide-modal-content">
-            <button class="modal-close-btn" id="btn-close-guide">×</button>
+            <button class="modal-close-btn" id="btn-close-guide" onclick="document.getElementById('user-guide-modal').style.display='none'">×</button>
             <div class="modal-header-box">
                 <div class="modal-icon">📖</div>
                 <h2>Portal User Guide & Instructions</h2>
@@ -248,13 +248,13 @@
                 </div>
 
                 <div class="guide-section">
-                    <h3>🧮 3. Excel Formulas & Paid Arrear Deduction</h3>
+                    <h3>🧮 3. Excel Formulas & Arrear Deduction</h3>
                     <p>The generated Excel embeds live formulas matching official DPO formats:</p>
                     <ul>
                         <li><strong>Admissible Net:</strong> <code>Gross - NPS - GIS - Professional Tax</code></li>
                         <li><strong>Drawn Net:</strong> <code>Regular Drawn Gross - NPS - GIS</code></li>
-                        <li><strong>Paid Arrear (Col S / Col M):</strong> Automatically captures past arrear bills from your statement.</li>
-                        <li><strong>Net Arrear Payable:</strong> <code>(Admissible Net - Drawn Net) - Paid Arrear</code></li>
+                        <li><strong>Arrear Row:</strong> If an arrear bill was drawn in a month, an <em>Arrear Row</em> is added right below that month. Arrear Gross is placed under Basic, Arrear NPS under NPS, and Arrear Net under Net Amount.</li>
+                        <li><strong>Net Difference:</strong> Automatically subtracts Arrear Row Net from total arrear payable.</li>
                     </ul>
                 </div>
 
@@ -264,7 +264,7 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" id="btn-guide-ok" style="margin-top: 16px; width: 100%;">Got it, Close</button>
+            <button class="btn btn-primary" id="btn-guide-ok" onclick="document.getElementById('user-guide-modal').style.display='none'" style="margin-top: 16px; width: 100%;">Got it, Close</button>
         </div>
     </div>
 </body>

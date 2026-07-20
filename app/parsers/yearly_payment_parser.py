@@ -155,15 +155,20 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                     row_name_clean = re.sub(r'\s+', ' ', row_name).strip().lower()
                     
                     if is_other_detail_page:
-                        # Extract arrear drawn from Other Payment Detail section
-                        if "total other" in row_name_clean or "net" in row_name_clean:
-                            for col_idx, info in month_mappings.items():
-                                if col_idx < len(row):
-                                    val_str = row[col_idx]
-                                    if val_str is not None:
-                                        val_clean = re.sub(r'[^\d]', '', val_str)
-                                        val = int(val_clean) if val_clean else 0
-                                        if val > 0:
+                        # Extract arrear drawn, gross, and nps from Other Payment Detail section
+                        for col_idx, info in month_mappings.items():
+                            if col_idx < len(row):
+                                val_str = row[col_idx]
+                                if val_str is not None:
+                                    val_clean = re.sub(r'[^\d]', '', val_str)
+                                    val = int(val_clean) if val_clean else 0
+                                    if val > 0:
+                                        if "gross" in row_name_clean:
+                                            monthly_data[info["month_label"]]["arrear_gross"] = val
+                                        elif "deduction" in row_name_clean or "nps" in row_name_clean:
+                                            monthly_data[info["month_label"]]["arrear_nps"] = val
+                                        elif "total other" in row_name_clean or "net" in row_name_clean:
+                                            monthly_data[info["month_label"]]["arrear_net"] = val
                                             monthly_data[info["month_label"]]["arrear_drawn"] = val
                     else:
                         # Regular PayBill components

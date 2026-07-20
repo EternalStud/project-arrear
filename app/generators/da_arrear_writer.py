@@ -51,19 +51,15 @@ def write_da_arrear_sheet(ws, arrear_result):
         ws.cell(row=r, column=11, value=drn["nps"])
         ws.cell(row=r, column=12, value=f"=J{r}-K{r}")
         
-        # Column M: Paid Arrear (Column 13)
-        arrear_drawn = drn.get("arrear_drawn", 0)
-        ws.cell(row=r, column=13, value=arrear_drawn)
-        
-        # Columns N-R: Difference (using formulas)
-        ws.cell(row=r, column=14, value=f"=C{r}-H{r}") # Basic diff
-        ws.cell(row=r, column=15, value=f"=D{r}-I{r}") # DA diff
-        ws.cell(row=r, column=16, value=f"=E{r}-J{r}") # Gross diff
-        ws.cell(row=r, column=17, value=f"=F{r}-K{r}") # NPS diff
-        ws.cell(row=r, column=18, value=f"=G{r}-L{r}-M{r}") # Net diff = Admissible Net - Drawn Net - Paid Arrear
+        # Columns M-Q: Difference (using formulas)
+        ws.cell(row=r, column=13, value=f"=C{r}-H{r}") # Basic diff
+        ws.cell(row=r, column=14, value=f"=D{r}-I{r}") # DA diff
+        ws.cell(row=r, column=15, value=f"=E{r}-J{r}") # Gross diff
+        ws.cell(row=r, column=16, value=f"=F{r}-K{r}") # NPS diff
+        ws.cell(row=r, column=17, value=f"=G{r}-L{r}") # Net diff
         
     # 4. Write SUM formulas to the G.TOTAL row
-    sum_cols = [get_column_letter(c) for c in range(3, 19)] # Columns C to R
+    sum_cols = [get_column_letter(c) for c in range(3, 18)] # Columns C to Q
     format_total_row_formulas(ws, total_row_idx, start_row=start_row, cols_range=sum_cols)
     
     # 5. Format Signature & Seal row height & alignment (shifted to total_row_idx + 2)

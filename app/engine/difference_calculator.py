@@ -128,7 +128,6 @@ def compute_arrears(
     for month_lbl in sorted_months:
         adm = admissible_months[month_lbl]
         drn = drawn_data[month_lbl]
-        arrear_drawn = drn.get("arrear_drawn", 0)
         
         diff = {
             "basic": adm["basic"] - drn["basic"],
@@ -139,23 +138,52 @@ def compute_arrears(
             "nps": adm["nps"] - drn["nps"],
             "gis": adm["gis"] - drn["gis"],
             "professional_tax": adm["professional_tax"] - drn["professional_tax"],
-            "arrear_drawn": arrear_drawn,
-            "net": (adm["net"] - drn["net"]) - arrear_drawn
+            "net": adm["net"] - drn["net"]
         }
         
-        # If there's any difference, keep this month
-        # Note: sometimes only HRA or DA is different, or arrear_drawn is present, which is valid.
-        if any(abs(v) > 0 for v in [diff["basic"], diff["da"], diff["hra"], diff["net"], arrear_drawn]):
+        # If there's any difference, keep this regular month row
+        if any(abs(v) > 0 for v in [diff["basic"], diff["da"], diff["hra"], diff["net"]]):
             arrear_months.append({
                 "month_label": month_lbl,
                 "admissible": adm,
                 "drawn": drn,
-                "difference": diff
+                "difference": diff,
+                "is_arrear_row": False
             })
             
-            # Add to totals
             for key in totals.keys():
                 totals[key] += diff[key]
+                
+        # If the employee drew an arrear bill in this month, add a dedicated Arrear Row right after
+        arrear_val = drn.get("arrear_drawn", 0) or drn.get("arrear_net", 0)
+        if arrear_val > 0:
+            arr_gross = drn.get("arrear_gross", arrear_val)
+            arr_nps = drn.get("arrear_nps", 0)
+            arr_net = drn.get("arrear_net", arrear_val)
+            
+            arr_adm = {
+                "days": 0, "basic": 0, "da": 0, "hra": 0, "ma": 0,
+                "gross": 0, "nps": 0, "gis": 0, "professional_tax": 0, "net": 0
+            }
+            arr_drn = {
+                "days": 0, "basic": arr_gross, "da": 0, "hra": 0, "ma": 0,
+                "gross": arr_gross, "nps": arr_nps, "gis": 0, "professional_tax": 0, "net": arr_net
+            }
+            arr_diff = {
+                "basic": -arr_gross, "da": 0, "hra": 0, "ma": 0,
+                "gross": -arr_gross, "nps": -arr_nps, "gis": 0, "professional_tax": 0, "net": -arr_net
+            }
+            
+            arrear_months.append({
+                "month_label": f"{month_lbl} (Arrear)",
+                "admissible": arr_adm,
+                "drawn": arr_drn,
+                "difference": arr_diff,
+                "is_arrear_row": True
+            })
+            
+            for key in totals.keys():
+                totals[key] += arr_diff[key]
                 
     # 7. Convert total net difference to words
     in_words = convert_number_to_words(totals["net"])
