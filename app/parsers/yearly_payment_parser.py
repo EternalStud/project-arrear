@@ -80,18 +80,18 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                     continue
                 # Look for a header table (contains columns starting with years, like 2025-Mar)
                 for row in table:
-                    if len(row) >= 13:
+                    if len(row) >= 2:
                         # Check if columns are month headers
                         parsed_headers = []
                         valid_headers_count = 0
-                        for col_idx, col in enumerate(row[1:13], start=1):
-                            if col:
+                        for col_idx, col in enumerate(row[1:], start=1):
+                            if col and str(col).strip():
                                 parsed = parse_financial_year_from_header(col.strip())
                                 if parsed:
                                     parsed_headers.append((col_idx, parsed))
                                     valid_headers_count += 1
                         
-                        if valid_headers_count >= 8: # If we successfully parsed at least 8 month headers, this is our header row
+                        if valid_headers_count >= 1: # Header row found (works even for partial/ongoing financial year)
                             for col_idx, (m_name, year, fy) in parsed_headers:
                                 month_label = f"{m_name}-{str(year)[2:]}"
                                 month_mappings[col_idx] = {
@@ -143,7 +143,7 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
             tables = page.extract_tables()
             for table in tables:
                 for row in table:
-                    if not row or len(row) < 13:
+                    if not row or len(row) < 2:
                         continue
                     row_name = row[0]
                     if not row_name:
@@ -159,12 +159,13 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                             
                     if matched_key:
                         for col_idx, info in month_mappings.items():
-                            val_str = row[col_idx]
-                            if val_str is not None:
-                                # Remove commas or spaces, extract integer
-                                val_clean = re.sub(r'[^\d]', '', val_str)
-                                val = int(val_clean) if val_clean else 0
-                                monthly_data[info["month_label"]][matched_key] = val
+                            if col_idx < len(row):
+                                val_str = row[col_idx]
+                                if val_str is not None:
+                                    # Remove commas or spaces, extract integer
+                                    val_clean = re.sub(r'[^\d]', '', val_str)
+                                    val = int(val_clean) if val_clean else 0
+                                    monthly_data[info["month_label"]][matched_key] = val
 
     # Verify if gross or net is zero for some months, meaning they didn't get paid (we shouldn't process them)
     filtered_monthly_data = {}
