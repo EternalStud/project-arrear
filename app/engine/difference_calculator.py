@@ -11,7 +11,7 @@ def compute_arrears(
     drawn_data: Dict[str, Dict[str, Any]],
     employee_info: Dict[str, Any],
     hra_rules: List[Dict[str, Any]],
-    skip_joining_month: bool = True,
+    skip_joining_month: bool = False,
     da_rates: Optional[List[Dict[str, Any]]] = None,
     scope_start: Optional[str] = None,
     scope_end: Optional[str] = None
@@ -33,7 +33,7 @@ def compute_arrears(
     drawn_basics = [m["basic"] for m in drawn_data.values() if m["basic"] > 0]
     starting_step = find_starting_step(drawn_basics, column_idx, joining_basic)
     
-    # 3. Skip joining month if required
+    # 3. Skip joining month ONLY if explicitly requested
     # Extract month and year from DOJ
     joining_month_lbl = None
     if skip_joining_month and doj_str:
@@ -52,7 +52,7 @@ def compute_arrears(
     
     for month_lbl, drawn in drawn_data.items():
         if skip_joining_month and month_lbl == joining_month_lbl:
-            continue # skip joining month entirely
+            continue # skip joining month only if requested
             
         # Parse month/year
         parts = month_lbl.split("-")
@@ -72,16 +72,6 @@ def compute_arrears(
         )
         
         # Check for LWP pro-ration ratio
-        # Standard drawn basic pay rate for that month:
-        # We can find what the drawn basic pay rate was supposed to be.
-        # Usually it is drawn["basic"] but if pro-rated, we can get standard rate from fitment matrix
-        # using the drawn basic as guide.
-        # But wait! The simplest pro-ration ratio is:
-        # Ratio = drawn["basic"] / standard_drawn_basic
-        # Let's find which step the drawn basic matches.
-        # If drawn["basic"] matches a step exactly, Ratio = 1.0
-        # If it doesn't match any step exactly, we find the closest step in that column
-        # and Ratio = drawn["basic"] / closest_step_basic
         column_values = [FITMENT_MATRIX_VALS[step][column_idx] for step in sorted(FITMENT_MATRIX_VALS.keys())]
         closest_std_basic = min(column_values, key=lambda x: abs(x - drawn["basic"]))
         
@@ -99,7 +89,8 @@ def compute_arrears(
             standard_basic_rate=std_basic_rate,
             hra_rules=hra_rules,
             pro_ration_ratio=ratio,
-            da_rates=da_rates
+            da_rates=da_rates,
+            doj_str=doj_str
         )
         
     # 5. Post-process PT for September

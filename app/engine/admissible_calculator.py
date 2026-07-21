@@ -81,37 +81,63 @@ def calculate_admissible_for_month(
     standard_basic_rate: int,
     hra_rules: List[Dict[str, Any]],
     pro_ration_ratio: float = 1.0,
-    da_rates: List[Dict[str, Any]] = None
+    da_rates: List[Dict[str, Any]] = None,
+    doj_str: str = None
 ) -> Dict[str, Any]:
     """
     Calculates admissible salary components for a given month.
-    Does NOT calculate PT and Net yet (PT depends on annual gross pay).
+    Handles pro-rating and special rules for joining month (NPS=0, GIS=30, worked days).
     """
     year, month_num = parse_month_year(month_lbl)
     _, total_days = calendar.monthrange(year, month_num)
     
+    # Check if this month is the joining month
+    is_joining_month = False
+    joining_day = 1
+    if doj_str:
+        try:
+            parts = doj_str.split("-")
+            doj_day = int(parts[0])
+            doj_month = int(parts[1])
+            doj_year = int(parts[2])
+            if len(str(doj_year)) == 2:
+                doj_year += 2000
+            if year == doj_year and month_num == doj_month:
+                is_joining_month = True
+                joining_day = doj_day
+        except Exception:
+            pass
+            
     # 1. Get rates
     da_rate = get_da_rate_for_date(year, month_num, da_rates=da_rates)
     hra_rate = get_hra_rate_for_date(hra_rules, year, month_num)
     
-    # 2. Calculate standard rates
-    basic_std = standard_basic_rate
-    da_std = int(basic_std * da_rate)
-    hra_std = int(basic_std * hra_rate)
-    ma_std = MA_FIXED
-    
-    # 3. Apply pro-ration ratio (LWP)
-    basic_adm = int(basic_std * pro_ration_ratio)
-    da_adm = int(basic_adm * da_rate)
-    hra_adm = int(basic_adm * hra_rate)
-    ma_adm = int(ma_std * pro_ration_ratio)
-    
-    gross_adm = basic_adm + da_adm + hra_adm + ma_adm
-    nps_adm = int((basic_adm + da_adm) * 0.10)
-    gis_adm = GIS_FIXED
-    
-    paid_days = int(round(pro_ration_ratio * total_days))
-    
+    if is_joining_month:
+        worked_days = total_days - joining_day + 1
+        ratio = worked_days / total_days
+        
+        basic_adm = int(round(standard_basic_rate * ratio))
+        da_adm = int(round(basic_adm * da_rate))
+        hra_adm = int(round(basic_adm * hra_rate))
+        ma_adm = int(round(MA_FIXED * ratio))
+        
+        gross_adm = basic_adm + da_adm + hra_adm + ma_adm
+        nps_adm = 0  # Joining month NPS is 0
+        gis_adm = GIS_FIXED  # GIS is 30
+        paid_days = worked_days
+    else:
+        # Standard or LWP pro-rated month
+        basic_std = standard_basic_rate
+        basic_adm = int(round(basic_std * pro_ration_ratio))
+        da_adm = int(round(basic_adm * da_rate))
+        hra_adm = int(round(basic_adm * hra_rate))
+        ma_adm = int(round(MA_FIXED * pro_ration_ratio))
+        
+        gross_adm = basic_adm + da_adm + hra_adm + ma_adm
+        nps_adm = int(round((basic_adm + da_adm) * 0.10))
+        gis_adm = GIS_FIXED
+        paid_days = int(round(pro_ration_ratio * total_days)) if pro_ration_ratio < 1.0 else total_days
+
     return {
         "month_label": month_lbl,
         "financial_year": financial_year,

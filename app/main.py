@@ -135,7 +135,7 @@ async def api_parse_preview(request: Request):
                     drawn_data=drawn_data,
                     employee_info=payslip_info,
                     hra_rules=hra_rules,
-                    skip_joining_month=True,
+                    skip_joining_month=False,
                     da_rates=da_rates
                 )
                 response_content["arrear_months"] = result["arrear_months"]
@@ -240,7 +240,7 @@ async def api_generate_arrear(request: Request):
             drawn_data=drawn_data,
             employee_info=payslip_info,
             hra_rules=hra_rules,
-            skip_joining_month=True,
+            skip_joining_month=False,
             da_rates=da_rates,
             scope_start=scope_start,
             scope_end=scope_end
