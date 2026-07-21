@@ -373,10 +373,12 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append(key, files[key]);
         });
         
+        const joiningSession = document.getElementById("joining-session")?.value || "FN";
         formData.append("school_name", schoolName);
         formData.append("block_name", blockName);
         formData.append("designation", designation);
         formData.append("joining_basic", joiningBasic);
+        formData.append("joining_session", joiningSession);
         formData.append("scope_start", scopeStart);
         formData.append("scope_end", scopeEnd);
         

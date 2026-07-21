@@ -85,9 +85,17 @@
                         </select>
                     </div>
                     
-                    <div class="input-group" style="margin-top: 16px;">
-                        <label for="joining-basic">Joining Basic Pay (₹) <span style="font-size: 0.85em; font-weight: normal; color: var(--text-secondary);">(Optional)</span></label>
+                    <div class="input-group">
+                        <label for="joining-basic">Joining Basic Pay (₹) <span class="badge badge-info">Optional Fallback</span></label>
                         <input type="number" id="joining-basic" name="joining_basic" placeholder="E.g., 25000">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="joining-session">Joining Session (FN / AN)</label>
+                        <select id="joining-session" name="joining_session" style="width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #f8fafc; font-size: 14px; outline: none;">
+                            <option value="FN" selected>Forenoon (FN) — Count Joining Day</option>
+                            <option value="AN">Afternoon (AN) — Exclude Joining Day</option>
+                        </select>
                     </div>
                 </section>
 

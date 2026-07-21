@@ -22,6 +22,7 @@ def compute_arrears(
     """
     doj_str = employee_info.get("doj") or ""
     designation = employee_info.get("designation") or ""
+    joining_session = employee_info.get("joining_session") or "FN"
     
     # 1. Map designation to column index
     column_idx = get_designation_column_index(designation)
@@ -90,7 +91,8 @@ def compute_arrears(
             hra_rules=hra_rules,
             pro_ration_ratio=ratio,
             da_rates=da_rates,
-            doj_str=doj_str
+            doj_str=doj_str,
+            joining_session=joining_session
         )
         
     # 5. Post-process PT for September

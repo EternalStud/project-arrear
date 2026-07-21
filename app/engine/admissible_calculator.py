@@ -82,11 +82,13 @@ def calculate_admissible_for_month(
     hra_rules: List[Dict[str, Any]],
     pro_ration_ratio: float = 1.0,
     da_rates: List[Dict[str, Any]] = None,
-    doj_str: str = None
+    doj_str: str = None,
+    joining_session: str = "FN"
 ) -> Dict[str, Any]:
     """
     Calculates admissible salary components for a given month.
     Handles pro-rating and special rules for joining month (NPS=0, GIS=30, worked days).
+    Supports Forenoon (FN) and Afternoon (AN) joining sessions.
     """
     year, month_num = parse_month_year(month_lbl)
     _, total_days = calendar.monthrange(year, month_num)
@@ -113,7 +115,11 @@ def calculate_admissible_for_month(
     hra_rate = get_hra_rate_for_date(hra_rules, year, month_num)
     
     if is_joining_month:
-        worked_days = total_days - joining_day + 1
+        if str(joining_session).upper() == "AN":
+            worked_days = max(0, total_days - joining_day)
+        else:
+            worked_days = max(1, total_days - joining_day + 1)
+            
         ratio = worked_days / total_days
         
         basic_adm = int(round(standard_basic_rate * ratio))
