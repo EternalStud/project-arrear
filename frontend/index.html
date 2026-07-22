@@ -212,16 +212,27 @@
 
     <!-- Donation Modal -->
     <div id="donation-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 440px;">
             <button class="modal-close-btn" id="btn-close-modal">×</button>
             <div class="modal-icon">☕</div>
             <h2>Excel Generated Successfully!</h2>
-            <p>If this tool saved your valuable time and effort, please consider supporting the developer.</p>
-            <div class="upi-box">
+            <p style="margin-bottom: 14px;">Thank you for using the portal! If this tool saved your valuable time and effort, consider supporting the developer with a small contribution.</p>
+            
+            <div class="qr-pay-card" onclick="window.location.href='upi://pay?pa=eternalstudent@cnrb&pn=Teacher%20Arrear%20Portal&cu=INR'" style="cursor: pointer; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 16px; padding: 16px; margin-bottom: 16px; text-align: center; transition: transform 0.2s, border-color 0.2s;">
+                <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);">
+                    <img src="upi_qr.png" alt="Scan to Pay via UPI" style="width: 170px; height: 170px; display: block; border-radius: 6px;">
+                </div>
+                <div style="margin-top: 10px; font-size: 0.82rem; color: #a5b4fc; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span>📲</span> <span>Scan with PhonePe, GPay, Paytm or BHIM</span>
+                </div>
+            </div>
+
+            <div class="upi-box" onclick="navigator.clipboard.writeText('eternalstudent@cnrb'); alert('UPI ID copied: eternalstudent@cnrb');" style="cursor: pointer;" title="Click to copy UPI ID">
                 <span class="upi-label">UPI ID:</span>
                 <span class="upi-value">eternalstudent@cnrb</span>
+                <span style="font-size: 0.75rem; color: #a5b4fc; background: rgba(99, 102, 241, 0.2); padding: 2px 6px; border-radius: 4px; margin-left: 4px;">Copy</span>
             </div>
-            <button class="btn btn-primary" id="btn-modal-ok">Okay, Got it!</button>
+            <button class="btn btn-primary" id="btn-modal-ok" style="width: 100%;">Got it, Close</button>
         </div>
     </div>
 
