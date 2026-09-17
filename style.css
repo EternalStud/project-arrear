@@ -31,11 +31,11 @@ body {
     background-attachment: fixed;
     color: var(--text-primary);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 24px;
+    margin: 0;
+    padding: 24px 16px;
     overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 /* Glass background circles */
@@ -112,20 +112,7 @@ header h1 {
     color: var(--text-secondary);
 }
 
-.portal-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 16px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    background: rgba(99, 102, 241, 0.15);
-    border: 1px solid rgba(99, 102, 241, 0.35);
-    color: #c7d2fe;
-    margin-bottom: 12px;
-}
+
 
 .portal-desc {
     font-size: 0.88rem;
@@ -144,6 +131,10 @@ header h1 {
     font-size: 0.87rem;
     line-height: 1.55;
     transition: all 0.2s ease;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .guidance-icon {
@@ -196,6 +187,10 @@ header h1 {
     grid-template-columns: 1.1fr 0.9fr;
     gap: 24px;
     align-items: start;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 @media (max-width: 1024px) {
@@ -214,6 +209,9 @@ header h1 {
     -webkit-backdrop-filter: blur(20px);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .card:hover {
@@ -1050,24 +1048,75 @@ footer .heart {
 
 /* Site Footer */
 .site-footer {
-    margin-top: 36px;
-    margin-bottom: 24px;
+    margin-top: 48px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 16px;
-    color: var(--text-muted);
-    font-size: 0.9rem;
+    padding: 0 16px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.site-footer p {
+.footer-pill {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
+    gap: 8px;
+    padding: 10px 24px;
+    background: rgba(17, 24, 39, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 15px rgba(99, 102, 241, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.2px;
 }
 
-.site-footer strong {
-    color: #a5b4fc;
-    font-weight: 600;
+.footer-pill:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.25), 0 0 20px rgba(99, 102, 241, 0.15);
+    transform: translateY(-2px);
+    color: #f8fafc;
+}
+
+.footer-text {
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.footer-heart {
+    display: inline-block;
+    color: #ef4444;
+    font-size: 1.05rem;
+    line-height: 1;
+    margin: 0 2px;
+    animation: heartBeat 1.8s infinite ease-in-out;
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6));
+    transition: transform 0.2s ease;
+}
+
+.footer-pill:hover .footer-heart {
+    transform: scale(1.25);
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.24); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.16); }
+    70% { transform: scale(1); }
+}
+
+.footer-author {
+    font-weight: 700;
+    background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 50%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.3px;
 }
 
 /* Responsive adjustments for tablet and mobile screens (<= 768px) */
@@ -1177,6 +1226,9 @@ footer .heart {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         margin-bottom: 16px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .hra-table {
@@ -1194,10 +1246,15 @@ footer .heart {
     }
 
     .site-footer {
-        margin-top: 28px;
-        margin-bottom: 16px;
-        padding: 12px;
-        font-size: 0.85rem;
+        margin-top: 36px;
+        margin-bottom: 24px;
+        padding: 0 12px;
+    }
+
+    .footer-pill {
+        padding: 8px 18px;
+        font-size: 0.86rem;
+        gap: 6px;
     }
 }
 
@@ -1222,14 +1279,6 @@ footer .heart {
 
     .logo-icon {
         font-size: 1.8rem;
-    }
-
-    .portal-badge {
-        font-size: 0.74rem;
-        padding: 4px 10px;
-        white-space: normal;
-        text-align: center;
-        line-height: 1.35;
     }
 
     .subtitle {
@@ -1297,6 +1346,18 @@ footer .heart {
 
     .guide-scroll-body {
         max-height: 50vh;
+    }
+
+    .site-footer {
+        margin-top: 28px;
+        margin-bottom: 20px;
+        padding: 0 8px;
+    }
+
+    .footer-pill {
+        padding: 8px 16px;
+        font-size: 0.82rem;
+        gap: 5px;
     }
 }
 
