@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bihar Teacher Arrear Form Generator</title>
+    <title>Bihar Teacher Arrear Portal — DPO Establishment (All Districts)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -14,13 +14,15 @@
     <div class="glass-bg"></div>
     <div class="container">
         <header>
+            <div class="portal-badge">🏛️ Education Department, Govt. of Bihar • All 38 Districts</div>
             <div class="logo-container">
                 <div class="logo-icon">📊</div>
-                <h1>DPO Muzaffarpur</h1>
+                <h1>Bihar Teacher Arrear Portal</h1>
             </div>
-            <p class="subtitle">Teacher Salary & DA Arrear Form Generator</p>
-            <div style="margin-top: 12px;">
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-open-guide" onclick="document.getElementById('user-guide-modal').style.display='flex'" style="border-radius: 20px; padding: 6px 16px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+            <p class="subtitle">Official Salary & DA Arrear Form Generator for DPO Establishment</p>
+            <p class="portal-desc">Audit-compliant arrear calculation for BPSC TRE 1, TRE 2, TRE 3 & Niyojit Shikshak across all Bihar districts</p>
+            <div style="margin-top: 14px;">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-open-guide" onclick="document.getElementById('user-guide-modal').style.display='flex'" style="border-radius: 20px; padding: 7px 18px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500;">
                     📖 User Guide & Instructions
                 </button>
             </div>
@@ -30,16 +32,34 @@
             <form id="arrear-form" class="grid-layout" enctype="multipart/form-data">
                 <!-- Left Panel: Documents & Basic Info -->
                 <section class="card upload-card">
-                    <h2>📅 1. Arrear Scope</h2>
-                    <p class="scope-description">Define the arrear calculation period. Upload slots will adjust automatically.</p>
+                    <h2>📅 1. Arrear Scope (Calculation Period)</h2>
+                    <p class="scope-description">Select the exact period for your salary and DA arrear claim. Upload slots adjust automatically.</p>
+                    
+                    <div class="guidance-box recommendation-box">
+                        <div class="guidance-icon">💡</div>
+                        <div class="guidance-content">
+                            <strong>Recommended for Overall Arrear:</strong>
+                            Set <strong>From: [Your Joining Month]</strong> (e.g. <code>Nov-2023</code> for TRE 1 or <code>Feb-2024</code> for TRE 2) to <strong>To: [Current Month / Till Date]</strong>. This automatically generates a complete arrear claim from day one of joining up to the present.
+                        </div>
+                    </div>
+
+                    <div class="scope-presets-container">
+                        <span class="preset-label">Quick Presets:</span>
+                        <div class="scope-preset-buttons">
+                            <button type="button" class="btn-scope-pill" data-start="2023-11" data-end="2026-02">⭐ BPSC TRE 1 (Nov-23 → Present)</button>
+                            <button type="button" class="btn-scope-pill" data-start="2024-02" data-end="2026-02">⭐ BPSC TRE 2 (Feb-24 → Present)</button>
+                            <button type="button" class="btn-scope-pill" data-start="2023-03" data-end="2026-02">📅 Full 3 FYs (2023–26)</button>
+                        </div>
+                    </div>
+
                     <div class="scope-selector">
                         <div class="input-group">
-                            <label for="scope-start">From</label>
+                            <label for="scope-start">From (Start Month) <span class="required-star">*</span></label>
                             <input type="month" id="scope-start" value="2023-03">
                         </div>
                         <span class="scope-arrow">→</span>
                         <div class="input-group">
-                            <label for="scope-end">To</label>
+                            <label for="scope-end">To (End Month) <span class="required-star">*</span></label>
                             <input type="month" id="scope-end" value="2026-02">
                         </div>
                     </div>
@@ -64,16 +84,62 @@
                     <h2>🏫 3. School & Employee Details</h2>
                     <div class="input-row">
                         <div class="input-group">
-                            <label for="school-name">School Name</label>
-                            <input type="text" id="school-name" name="school_name" placeholder="E.g., Middle School Ratanpur" required>
+                            <label for="district">District <span class="required-star">*</span></label>
+                            <select id="district" name="district" required class="uppercase-input">
+                                <option value="ARARIA">ARARIA</option>
+                                <option value="ARWAL">ARWAL</option>
+                                <option value="AURANGABAD">AURANGABAD</option>
+                                <option value="BANKA">BANKA</option>
+                                <option value="BEGUSARAI">BEGUSARAI</option>
+                                <option value="BHAGALPUR">BHAGALPUR</option>
+                                <option value="BHOJPUR">BHOJPUR (ARA)</option>
+                                <option value="BUXAR">BUXAR</option>
+                                <option value="DARBHANGA">DARBHANGA</option>
+                                <option value="EAST CHAMPARAN">EAST CHAMPARAN (MOTIHARI)</option>
+                                <option value="GAYA">GAYA</option>
+                                <option value="GOPALGANJ">GOPALGANJ</option>
+                                <option value="JAMUI">JAMUI</option>
+                                <option value="JEHANABAD">JEHANABAD</option>
+                                <option value="KAIMUR">KAIMUR (BHABUA)</option>
+                                <option value="KATIHAR">KATIHAR</option>
+                                <option value="KHAGARIA">KHAGARIA</option>
+                                <option value="KISHANGANJ">KISHANGANJ</option>
+                                <option value="LAKHISARAI">LAKHISARAI</option>
+                                <option value="MADHEPURA">MADHEPURA</option>
+                                <option value="MADHUBANI">MADHUBANI</option>
+                                <option value="MUNGER">MUNGER</option>
+                                <option value="MUZAFFARPUR" selected>MUZAFFARPUR</option>
+                                <option value="NALANDA">NALANDA (BIHAR SHARIF)</option>
+                                <option value="NAWADA">NAWADA</option>
+                                <option value="PATNA">PATNA</option>
+                                <option value="PURNIA">PURNIA</option>
+                                <option value="ROHTAS">ROHTAS (SASARAM)</option>
+                                <option value="SAHARSA">SAHARSA</option>
+                                <option value="SAMASTIPUR">SAMASTIPUR</option>
+                                <option value="SARAN">SARAN (CHHAPRA)</option>
+                                <option value="SHEIKHPURA">SHEIKHPURA</option>
+                                <option value="SHEOHAR">SHEOHAR</option>
+                                <option value="SITAMARHI">SITAMARHI</option>
+                                <option value="SIWAN">SIWAN</option>
+                                <option value="SUPAUL">SUPAUL</option>
+                                <option value="VAISHALI">VAISHALI (HAJIPUR)</option>
+                                <option value="WEST CHAMPARAN">WEST CHAMPARAN (BETTIAH)</option>
+                                <option value="OTHER">OTHER (TYPE CUSTOM)</option>
+                            </select>
+                            <input type="text" id="district-custom" placeholder="ENTER DISTRICT NAME" style="display: none; margin-top: 8px; text-transform: uppercase;" class="uppercase-input">
                         </div>
                         <div class="input-group">
-                            <label for="block-name">Block Name</label>
-                            <input type="text" id="block-name" name="block_name" placeholder="E.g., Kanti" required>
+                            <label for="block-name">Block Name <span class="required-star">*</span></label>
+                            <input type="text" id="block-name" name="block_name" placeholder="E.G., KANTI" required class="uppercase-input">
                         </div>
                     </div>
                     
-                    <div class="input-group" style="margin-top: 16px;">
+                    <div class="input-group" style="margin-top: 14px;">
+                        <label for="school-name">Name of School <span class="required-star">*</span></label>
+                        <input type="text" id="school-name" name="school_name" placeholder="E.G., UTKRAMIT MADHYA VIDYALAYA..." required class="uppercase-input">
+                    </div>
+                    
+                    <div class="input-group" style="margin-top: 14px;">
                         <label for="designation">Designation (If Payslip fails to detect)</label>
                         <select id="designation" name="designation">
                             <option value="">Auto-detect from Payslip (Default)</option>
@@ -85,17 +151,19 @@
                         </select>
                     </div>
                     
-                    <div class="input-group">
-                        <label for="joining-basic">Joining Basic Pay (₹) <span class="badge badge-info">Optional Fallback</span></label>
-                        <input type="number" id="joining-basic" name="joining_basic" placeholder="E.g., 25000">
-                    </div>
+                    <div class="input-row" style="margin-top: 14px;">
+                        <div class="input-group">
+                            <label for="joining-basic">Joining Basic Pay (₹) <span class="badge badge-info">Optional Fallback</span></label>
+                            <input type="number" id="joining-basic" name="joining_basic" placeholder="E.g., 25000">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="joining-session">Joining Session (FN / AN)</label>
-                        <select id="joining-session" name="joining_session" style="width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #f8fafc; font-size: 14px; outline: none;">
-                            <option value="FN" selected>Forenoon (FN) — Count Joining Day</option>
-                            <option value="AN">Afternoon (AN) — Exclude Joining Day</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="joining-session">Joining Session (FN / AN)</label>
+                            <select id="joining-session" name="joining_session" style="width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #f8fafc; font-size: 14px; outline: none;">
+                                <option value="FN" selected>Forenoon (FN) — Count Joining Day</option>
+                                <option value="AN">Afternoon (AN) — Exclude Joining Day</option>
+                            </select>
+                        </div>
                     </div>
                 </section>
 
@@ -129,6 +197,14 @@
                         <button type="button" class="btn btn-secondary btn-sm" id="btn-add-hra">+ Add HRA Range</button>
                     </div>
                     
+                    <div class="guidance-box hint-box">
+                        <div class="guidance-icon">💡</div>
+                        <div class="guidance-content">
+                            <strong>Multiple School / Transfer Hint:</strong>
+                            If you worked in multiple schools during the arrear period (e.g. transferred from a rural school with 4%/5% HRA to an urban or sub-divisional school with 7.5%/10% HRA), click <strong>"+ Add HRA Range"</strong> to add separate rows with the exact <em>From</em> and <em>To</em> months and the corresponding admissible HRA rate for each school.
+                        </div>
+                    </div>
+
                     <div class="input-group" style="margin-top: 8px;">
                         <label for="hra-presets">Quick Presets</label>
                         <select id="hra-presets" class="preset-select">
@@ -182,41 +258,37 @@
                                 </tr>
                             </thead>
                             <tbody id="da-table-body">
-                                <!-- DA Rows dynamically added by JS -->
+                                <!-- DA Rows dynamically added -->
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="action-buttons" style="grid-template-columns: 1fr; margin-top: 24px;">
-                        <button type="submit" class="btn btn-primary" id="btn-submit" disabled style="padding: 16px; font-size: 1.1rem; border-radius: 12px;">📥 Generate & Download Excel</button>
-                    </div>
-
-                    <!-- Animated Progress Bar -->
-                    <div class="progress-container" id="progress-container" style="display: none; margin-top: 1.5rem;">
-                        <div class="progress-header">
-                            <span class="progress-status" id="progress-status">Analyzing documents...</span>
-                            <span class="progress-percent" id="progress-percent">0%</span>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" id="progress-bar-fill"></div>
-                        </div>
+                    <div class="actions" style="margin-top: 24px;">
+                        <button type="submit" class="btn btn-primary" id="btn-submit" disabled>📥 Generate & Download</button>
                     </div>
                 </section>
             </form>
+
+            <div class="progress-bar-container" id="progress-container" style="display: none;">
+                <div class="progress-bar" id="progress-bar"></div>
+                <div class="progress-status" id="progress-status">Uploading documents...</div>
+            </div>
         </main>
-        
-        <footer>
-            <p>Made with <span class="heart">♥</span> by Eternal Student</p>
-        </footer>
     </div>
 
     <!-- Donation Modal -->
     <div id="donation-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="max-width: 440px;">
+        <div class="modal-content">
             <button class="modal-close-btn" id="btn-close-modal">×</button>
-            <div class="modal-icon">☕</div>
-            <h2>Excel Generated Successfully!</h2>
-            <p style="margin-bottom: 14px;">Thank you for using the portal! If this tool saved your valuable time and effort, consider supporting the developer with a small contribution.</p>
+            <div class="modal-header-box">
+                <div class="modal-icon">☕</div>
+                <h2>Thank You for Using the Portal!</h2>
+                <p>Your arrear spreadsheet has been generated successfully and your download has started.</p>
+            </div>
+            
+            <div class="modal-body-text">
+                <p>If you found this tool helpful and appreciate the independent developer's effort to save your valuable time, consider supporting further maintenance and server costs by buying a cup of tea!</p>
+            </div>
             
             <div class="qr-pay-card" onclick="window.location.href='upi://pay?pa=eternalstudent@cnrb&pn=Teacher%20Arrear%20Portal&cu=INR'" style="cursor: pointer; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 16px; padding: 16px; margin-bottom: 16px; text-align: center; transition: transform 0.2s, border-color 0.2s;">
                 <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);">
@@ -243,7 +315,7 @@
             <div class="modal-header-box">
                 <div class="modal-icon">📖</div>
                 <h2>Portal User Guide & Instructions</h2>
-                <p>Complete guide to generating audit-compliant Bihar Teacher Arrear Forms</p>
+                <p>Complete guide to generating audit-compliant Bihar Teacher Arrear Forms (All 38 Districts)</p>
             </div>
             
             <div class="guide-scroll-body">
@@ -258,11 +330,11 @@
                 <div class="guide-section">
                     <h3>📑 2. Step-by-Step Instructions</h3>
                     <ol>
-                        <li><strong>Arrear Scope:</strong> Select From & To months. Upload slots adjust automatically.</li>
+                        <li><strong>Arrear Scope:</strong> Select From & To months. <em>Recommendation:</em> Set From month to your joining month and To month to till date for an overall complete claim. Upload slots adjust automatically.</li>
                         <li><strong>Upload PDFs:</strong> Drag & drop or browse your HRMS statements and pay slip.</li>
-                        <li><strong>School Details:</strong> Fill School Name & Block Name.</li>
-                        <li><strong>Designation & Basic Fallbacks:</strong> If payslip fails to auto-detect designation, select it manually. If joining month was partial or non-standard, enter your <em>Joining Basic Pay (₹)</em> to lock in the +3% annual increment rule.</li>
-                        <li><strong>Rates & Presets:</strong> Choose HRA presets (4%→5%, 7.5%→10%, or Corrected Joiner) and DA rate schedule.</li>
+                        <li><strong>District & School Details:</strong> Select your District (supports all 38 districts of Bihar) and enter Block Name and School Name. All names are automatically formatted in capital letters on the official DPO format.</li>
+                        <li><strong>Designation & Basic Fallbacks:</strong> If payslip fails to auto-detect designation, select it manually. If joining month was partial or non-standard, enter your <em>Joining Basic Pay (₹)</em> to lock in the statutory Fitment Matrix step.</li>
+                        <li><strong>HRA Rates & Multi-School Transfers:</strong> Choose HRA presets (4%→5%, 7.5%→10%, or Corrected Joiner). If you transferred between rural and urban schools during the arrear period, add separate rows for each school's period.</li>
                     </ol>
                 </div>
 

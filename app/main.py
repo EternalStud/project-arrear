@@ -73,6 +73,14 @@ async def api_parse_preview(request: Request):
         if not yearly_files:
             raise HTTPException(status_code=400, detail="At least one Yearly Statement PDF is required.")
             
+        district = (form.get("district") or "MUZAFFARPUR").strip().upper()
+        school_name = (form.get("school_name") or "").strip().upper()
+        block_name = (form.get("block_name") or "").strip().upper()
+        designation = form.get("designation", "")
+        joining_basic = form.get("joining_basic", "")
+        joining_session = form.get("joining_session", "FN")
+        scope_start = form.get("scope_start")
+        scope_end = form.get("scope_end")
         hra_rates = form.get("hra_rates")
         da_rates_str = form.get("da_rates")
         
@@ -85,6 +93,15 @@ async def api_parse_preview(request: Request):
             payslip_info = parse_payslip(path_ps)
         except Exception as parse_err:
             payslip_info = {"name": None, "designation": None, "doj": None, "pran": None, "bank_account": None, "ifsc": None, "pan": None}
+            
+        payslip_info["district"] = district
+        payslip_info["school_name"] = school_name
+        payslip_info["block_name"] = block_name
+        if designation:
+            payslip_info["designation"] = designation
+        if joining_basic:
+            payslip_info["joining_basic"] = joining_basic
+        payslip_info["joining_session"] = joining_session
             
         # Parse yearly statements
         drawn_data = {}
@@ -136,7 +153,9 @@ async def api_parse_preview(request: Request):
                     employee_info=payslip_info,
                     hra_rules=hra_rules,
                     skip_joining_month=False,
-                    da_rates=da_rates
+                    da_rates=da_rates,
+                    scope_start=scope_start,
+                    scope_end=scope_end
                 )
                 response_content["arrear_months"] = result["arrear_months"]
                 response_content["totals"] = result["totals"]
@@ -189,8 +208,9 @@ async def api_generate_arrear(request: Request):
         if not yearly_files:
             raise HTTPException(status_code=400, detail="At least one Yearly Statement PDF is required.")
             
-        school_name = form.get("school_name", "")
-        block_name = form.get("block_name", "")
+        district = (form.get("district") or "MUZAFFARPUR").strip().upper()
+        school_name = (form.get("school_name") or "").strip().upper()
+        block_name = (form.get("block_name") or "").strip().upper()
         designation = form.get("designation", "")
         joining_basic = form.get("joining_basic", "")
         joining_session = form.get("joining_session", "FN")
@@ -221,6 +241,7 @@ async def api_generate_arrear(request: Request):
         except Exception as parse_err:
             payslip_info = {"name": None, "designation": None, "doj": None, "pran": None, "bank_account": None, "ifsc": None, "pan": None}
             
+        payslip_info["district"] = district
         payslip_info["school_name"] = school_name
         payslip_info["block_name"] = block_name
         if designation:
@@ -276,8 +297,9 @@ async def api_generate_arrear(request: Request):
         
         # Determine download filename
         safe_name = "".join(c for c in (payslip_info.get("name") or "Arrear") if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
+        safe_dist = "".join(c for c in district if c.isalnum() or c in ("_", "-")).strip()
         pran = payslip_info.get("pran") or "Form"
-        filename = f"DPO_Arrear_{safe_name}_{pran}.xlsx"
+        filename = f"DPO_{safe_dist}_Arrear_{safe_name}_{pran}.xlsx"
         
         return FileResponse(
             output_path, 

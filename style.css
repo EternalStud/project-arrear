@@ -112,6 +112,135 @@ header h1 {
     color: var(--text-secondary);
 }
 
+.portal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    color: #c7d2fe;
+    margin-bottom: 12px;
+}
+
+.portal-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+/* Guidance & Hint Callout Boxes */
+.guidance-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin: 14px 0 16px 0;
+    font-size: 0.87rem;
+    line-height: 1.55;
+    transition: all 0.2s ease;
+}
+
+.guidance-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.guidance-content {
+    flex: 1;
+}
+
+.recommendation-box {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-left: 4px solid var(--success-color);
+    color: #d1fae5;
+}
+
+.recommendation-box strong {
+    color: #34d399;
+}
+
+.hint-box {
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-left: 4px solid #3b82f6;
+    color: #e0f2fe;
+}
+
+.hint-box strong {
+    color: #60a5fa;
+}
+
+/* Scope Preset Pills */
+.scope-presets-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.preset-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.scope-preset-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-scope-pill {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-scope-pill:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #f8fafc;
+    transform: translateY(-1px);
+}
+
+.btn-scope-pill.active {
+    background: var(--accent-gradient);
+    border-color: var(--accent-color);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.uppercase-input {
+    text-transform: uppercase;
+}
+
+.required-star {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
 /* Main Grid Layout */
 .grid-layout {
     display: grid;

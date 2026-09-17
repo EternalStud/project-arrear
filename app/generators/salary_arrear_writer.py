@@ -12,8 +12,18 @@ def write_salary_arrear_sheet(ws, arrear_result):
     in_words = arrear_result["in_words"]
     
     # 1. Fill Employee Metadata headers
-    ws["A3"] = f"NAME OF SCHOOL- {employee.get('school_name') or ''}"
-    ws["N3"] = f"BLOCK NAME - {employee.get('block_name') or ''}"
+    district = (employee.get("district") or "MUZAFFARPUR").strip().upper()
+    school_name = (employee.get("school_name") or "").strip().upper()
+    block_name = (employee.get("block_name") or "").strip().upper()
+    
+    # Update Row 1 Office Header with District
+    ws["A1"] = f"OFFICE, DPO ESTABLISHMENT {district}"
+    
+    ws["A3"] = f"NAME OF SCHOOL- {school_name}"
+    if district and district != "MUZAFFARPUR":
+        ws["N3"] = f"BLOCK NAME - {block_name} ({district})"
+    else:
+        ws["N3"] = f"BLOCK NAME - {block_name}"
     
     ws["A4"] = f"NAME OF TEACHER- {employee.get('name') or ''}"
     ws["I4"] = f"DESIGNATION- {employee.get('designation') or ''}"

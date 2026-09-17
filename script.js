@@ -279,8 +279,51 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    document.getElementById("scope-start").addEventListener("change", regenerateUploadSlots);
-    document.getElementById("scope-end").addEventListener("change", regenerateUploadSlots);
+    document.getElementById("scope-start").addEventListener("change", () => {
+        document.querySelectorAll(".btn-scope-pill").forEach(p => p.classList.remove("active"));
+        regenerateUploadSlots();
+    });
+    document.getElementById("scope-end").addEventListener("change", () => {
+        document.querySelectorAll(".btn-scope-pill").forEach(p => p.classList.remove("active"));
+        regenerateUploadSlots();
+    });
+
+    // Quick Scope Preset Pills
+    document.querySelectorAll(".btn-scope-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+            document.querySelectorAll(".btn-scope-pill").forEach(p => p.classList.remove("active"));
+            pill.classList.add("active");
+            const start = pill.getAttribute("data-start");
+            const end = pill.getAttribute("data-end");
+            if (start) document.getElementById("scope-start").value = start;
+            if (end) document.getElementById("scope-end").value = end;
+            regenerateUploadSlots();
+        });
+    });
+
+    // District selection & custom input
+    const districtSelect = document.getElementById("district");
+    const districtCustom = document.getElementById("district-custom");
+    if (districtSelect && districtCustom) {
+        districtSelect.addEventListener("change", () => {
+            if (districtSelect.value === "OTHER") {
+                districtCustom.style.display = "block";
+                districtCustom.focus();
+            } else {
+                districtCustom.style.display = "none";
+            }
+        });
+    }
+
+    // Auto-uppercase fields in real time
+    ["school-name", "block-name", "district-custom"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", () => {
+                el.value = el.value.toUpperCase();
+            });
+        }
+    });
 
     // Initial setups
     initDaTable();
@@ -350,21 +393,33 @@ document.addEventListener("DOMContentLoaded", () => {
         return list;
     }
 
-
-
     // Submit handler (Generate Excel and download)
     arrearForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const schoolName = document.getElementById("school-name").value.trim();
-        const blockName = document.getElementById("block-name").value.trim();
+        let district = "MUZAFFARPUR";
+        if (districtSelect) {
+            if (districtSelect.value === "OTHER") {
+                district = (districtCustom?.value || "").trim().toUpperCase();
+                if (!district) {
+                    alert("Please enter your District Name.");
+                    districtCustom.focus();
+                    return;
+                }
+            } else {
+                district = districtSelect.value.trim().toUpperCase();
+            }
+        }
+
+        const schoolName = document.getElementById("school-name").value.trim().toUpperCase();
+        const blockName = document.getElementById("block-name").value.trim().toUpperCase();
         const designation = document.getElementById("designation") ? document.getElementById("designation").value.trim() : "";
         const joiningBasic = document.getElementById("joining-basic") ? document.getElementById("joining-basic").value.trim() : "";
         const scopeStart = document.getElementById("scope-start") ? document.getElementById("scope-start").value : "";
         const scopeEnd = document.getElementById("scope-end") ? document.getElementById("scope-end").value : "";
         
-        if (!schoolName || !blockName) {
-            alert("Please enter School Name and Block Name.");
+        if (!district || !schoolName || !blockName) {
+            alert("Please enter District, School Name, and Block Name.");
             return;
         }
 
@@ -374,6 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         
         const joiningSession = document.getElementById("joining-session")?.value || "FN";
+        formData.append("district", district);
         formData.append("school_name", schoolName);
         formData.append("block_name", blockName);
         formData.append("designation", designation);

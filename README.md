@@ -1,8 +1,8 @@
-# 📑 DPO Muzaffarpur — Teacher Arrear Form Generator
+# 📑 Bihar Teacher Arrear Portal — DPO Establishment (All Districts)
 
-An automated, bulletproof Salary and DA Arrear calculator and official spreadsheet generator designed for teachers under the **District Programme Officer (Establishment), Muzaffarpur (Bihar Education Department)**.
+An automated, bulletproof Salary and DA Arrear calculator and official spreadsheet generator designed for teachers under the **District Programme Officer (Establishment), Bihar Education Department (supporting all 38 districts)**.
 
-It parses Bihar HRMS PDF payment statements and payslips, calculates statutory admissible pay based on the official Bihar Government Fitment Matrix and Dearness Allowance schedules, and automatically populates the official multi-sheet Excel arrear forms.
+It parses Bihar HRMS PDF payment statements and payslips, calculates statutory admissible pay based on the official Bihar Government Fitment Matrix and Dearness Allowance schedules, and automatically populates the official multi-sheet Excel arrear forms customized to the teacher's selected district.
 
 ---
 
