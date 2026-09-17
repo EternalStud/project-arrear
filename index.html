@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css?v=2.6">
+    <script src="script.js?v=2.6" defer></script>
 </head>
 <body>
     <div class="glass-bg"></div>
@@ -229,7 +229,18 @@
                                 </tr>
                             </thead>
                             <tbody id="hra-table-body">
-                                <!-- HRA Rows dynamically added -->
+                                <tr>
+                                    <td><input type="month" class="hra-from" value="2023-11" required></td>
+                                    <td><input type="month" class="hra-to" value="2023-12" required></td>
+                                    <td><input type="number" step="0.1" class="hra-rate" placeholder="Rate %" value="7.5" required style="width: 85px;"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm btn-delete-row">Remove</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="month" class="hra-from" value="2024-01" required></td>
+                                    <td><input type="month" class="hra-to" value="2026-12" required></td>
+                                    <td><input type="number" step="0.1" class="hra-rate" placeholder="Rate %" value="10.0" required style="width: 85px;"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm btn-delete-row">Remove</button></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -260,7 +271,42 @@
                                 </tr>
                             </thead>
                             <tbody id="da-table-body">
-                                <!-- DA Rows dynamically added -->
+                                <tr>
+                                    <td><input type="month" value="2023-11" class="da-from" required></td>
+                                    <td><input type="month" value="2023-12" class="da-to" required></td>
+                                    <td><input type="number" value="46.0" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 46"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="month" value="2024-01" class="da-from" required></td>
+                                    <td><input type="month" value="2024-06" class="da-to" required></td>
+                                    <td><input type="number" value="50.0" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 50"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="month" value="2024-07" class="da-from" required></td>
+                                    <td><input type="month" value="2024-12" class="da-to" required></td>
+                                    <td><input type="number" value="53.0" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 53"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="month" value="2025-01" class="da-from" required></td>
+                                    <td><input type="month" value="2025-06" class="da-to" required></td>
+                                    <td><input type="number" value="55.0" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 55"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="month" value="2025-07" class="da-from" required></td>
+                                    <td><input type="month" value="2025-12" class="da-to" required></td>
+                                    <td><input type="number" value="58.0" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 58"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="month" value="2026-01" class="da-from" required></td>
+                                    <td><input type="month" value="2026-12" class="da-to" required></td>
+                                    <td><input type="number" value="61.0" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 61"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -270,19 +316,19 @@
                             <span class="btn-icon">📥</span>
                             <span class="btn-text">Generate & Download Arrear Forms</span>
                         </button>
+
+                        <div class="progress-container" id="progress-container" style="display: none;">
+                            <div class="progress-header">
+                                <span class="progress-status" id="progress-status">Uploading documents...</span>
+                                <span class="progress-percent" id="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </form>
-
-            <div class="progress-container" id="progress-container" style="display: none; margin-top: 24px;">
-                <div class="progress-header">
-                    <span class="progress-status" id="progress-status">Uploading documents...</span>
-                    <span class="progress-percent" id="progress-percent">0%</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progress-bar-fill"></div>
-                </div>
-            </div>
         </main>
 
         <footer class="site-footer">

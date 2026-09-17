@@ -446,13 +446,13 @@ header h1 {
 }
 
 .hra-table input {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.75);
+    border: 1.5px solid rgba(255, 255, 255, 0.16);
     border-radius: 8px;
-    padding: 8px 10px;
+    padding: 8px 12px;
     color: #ffffff;
     font-family: inherit;
-    font-size: 0.88rem;
+    font-size: 0.90rem;
     font-weight: 500;
     width: 100%;
     outline: none;
@@ -462,27 +462,33 @@ header h1 {
 
 .hra-table input[type="month"] {
     cursor: pointer;
+    color-scheme: dark;
+    min-width: 135px;
+    letter-spacing: 0.3px;
 }
 
 .hra-table input[type="month"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    filter: invert(1) brightness(1.4);
-    opacity: 0.75;
-    transition: opacity 0.2s ease;
+    filter: invert(1) brightness(1.8);
+    opacity: 0.85;
+    padding: 2px;
+    transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .hra-table input[type="month"]:hover::-webkit-calendar-picker-indicator {
     opacity: 1;
+    transform: scale(1.15);
 }
 
 .hra-table input:hover {
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(99, 102, 241, 0.7);
+    background: rgba(15, 23, 42, 0.95);
 }
 
 .hra-table input:focus {
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
+    background: rgba(15, 23, 42, 1);
 }
 
 /* Action buttons */
@@ -762,51 +768,73 @@ header h1 {
     font-weight: 600;
 }
 
-/* Progress Bar Styles */
+/* Progress Bar Styles - High Visibility & Contrast */
 .progress-container {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: #0f172a;
+    border: 2px solid #6366f1;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 25px rgba(99, 102, 241, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     animation: fadeIn 0.3s ease-out;
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
+    margin: 12px auto 0 auto;
 }
 
 .progress-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-    font-size: 0.85rem;
+    margin-bottom: 10px;
+    font-size: 0.92rem;
 }
 
 .progress-status {
-    font-weight: 500;
-    color: var(--text-secondary);
+    font-weight: 600;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.2px;
 }
 
 .progress-percent {
-    font-weight: 700;
-    color: var(--primary-color);
+    font-weight: 800;
+    color: #38bdf8;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 1.08rem;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
 }
 
 .progress-bar-bg {
     width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
+    height: 14px;
+    background: #030712;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
     overflow: hidden;
+    padding: 2px;
+    box-sizing: border-box;
 }
 
 .progress-bar-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--primary-color), #8b5cf6);
-    border-radius: 4px;
-    transition: width 0.3s ease-in-out;
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    background: linear-gradient(90deg, #38bdf8 0%, #6366f1 50%, #ec4899 100%);
+    background-size: 200% 100%;
+    border-radius: 5px;
+    transition: width 0.25s ease-in-out;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.8), 0 0 8px rgba(236, 72, 153, 0.6);
+    animation: progressShimmer 2s linear infinite;
+}
+
+@keyframes progressShimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
 }
 
 /* Arrear Scope Section & Minimalist Top-Tier Month Selector */
@@ -948,8 +976,10 @@ header h1 {
 /* Centered Top-Tier Generate & Download Action */
 .actions.actions-centered {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 16px;
     margin-top: 32px;
     margin-bottom: 8px;
     width: 100%;

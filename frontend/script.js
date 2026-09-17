@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
         progressContainer.style.display = "block";
         if (progressBarFill) {
             progressBarFill.style.width = "0%";
-            progressBarFill.style.background = "linear-gradient(90deg, var(--primary-color), #8b5cf6)";
-            progressBarFill.style.boxShadow = "0 0 10px rgba(99, 102, 241, 0.5)";
+            progressBarFill.style.background = "linear-gradient(90deg, #38bdf8 0%, #6366f1 50%, #ec4899 100%)";
+            progressBarFill.style.boxShadow = "0 0 14px rgba(56, 189, 248, 0.8), 0 0 8px rgba(236, 72, 153, 0.6)";
         }
         if (progressPercent) progressPercent.textContent = "0%";
         if (progressStatus) progressStatus.textContent = initialMsg;
@@ -81,21 +81,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function finishProgressBar(successMsg) {
         clearInterval(progressInterval);
-        if (progressBarFill) progressBarFill.style.width = "100%";
+        if (progressBarFill) {
+            progressBarFill.style.width = "100%";
+            progressBarFill.style.background = "linear-gradient(90deg, #10b981 0%, #059669 100%)";
+            progressBarFill.style.boxShadow = "0 0 14px rgba(16, 185, 129, 0.8)";
+        }
         if (progressPercent) progressPercent.textContent = "100%";
         if (progressStatus) progressStatus.textContent = successMsg;
 
         setTimeout(() => {
             if (progressContainer) progressContainer.style.display = "none";
-        }, 3000);
+        }, 3500);
     }
 
     function failProgressBar(errorMsg) {
         clearInterval(progressInterval);
         if (progressBarFill) {
             progressBarFill.style.width = "100%";
-            progressBarFill.style.background = "#ef4444";
-            progressBarFill.style.boxShadow = "0 0 10px rgba(239, 68, 68, 0.5)";
+            progressBarFill.style.background = "linear-gradient(90deg, #ef4444 0%, #dc2626 100%)";
+            progressBarFill.style.boxShadow = "0 0 14px rgba(239, 68, 68, 0.8)";
         }
         if (progressPercent) progressPercent.textContent = "Error";
         if (progressStatus) progressStatus.textContent = errorMsg;
