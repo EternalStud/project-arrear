@@ -274,9 +274,14 @@
                 </section>
             </form>
 
-            <div class="progress-bar-container" id="progress-container" style="display: none;">
-                <div class="progress-bar" id="progress-bar"></div>
-                <div class="progress-status" id="progress-status">Uploading documents...</div>
+            <div class="progress-container" id="progress-container" style="display: none; margin-top: 24px;">
+                <div class="progress-header">
+                    <span class="progress-status" id="progress-status">Uploading documents...</span>
+                    <span class="progress-percent" id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                </div>
             </div>
         </main>
 

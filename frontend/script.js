@@ -40,12 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let progressInterval = null;
 
     function startProgressBar(initialMsg) {
+        if (!progressContainer) return;
         progressContainer.style.display = "block";
-        progressBarFill.style.width = "0%";
-        progressBarFill.style.background = "linear-gradient(90deg, var(--primary-color), #8b5cf6)";
-        progressBarFill.style.boxShadow = "0 0 10px rgba(99, 102, 241, 0.5)";
-        progressPercent.textContent = "0%";
-        progressStatus.textContent = initialMsg;
+        if (progressBarFill) {
+            progressBarFill.style.width = "0%";
+            progressBarFill.style.background = "linear-gradient(90deg, var(--primary-color), #8b5cf6)";
+            progressBarFill.style.boxShadow = "0 0 10px rgba(99, 102, 241, 0.5)";
+        }
+        if (progressPercent) progressPercent.textContent = "0%";
+        if (progressStatus) progressStatus.textContent = initialMsg;
 
         let percent = 0;
         const steps = [
@@ -66,9 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const currentStep = steps[currentStepIndex];
             percent += 1;
 
-            progressBarFill.style.width = percent + "%";
-            progressPercent.textContent = percent + "%";
-            progressStatus.textContent = currentStep.msg;
+            if (progressBarFill) progressBarFill.style.width = percent + "%";
+            if (progressPercent) progressPercent.textContent = percent + "%";
+            if (progressStatus) progressStatus.textContent = currentStep.msg;
 
             if (percent >= currentStep.limit) {
                 currentStepIndex++;
@@ -78,22 +81,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function finishProgressBar(successMsg) {
         clearInterval(progressInterval);
-        progressBarFill.style.width = "100%";
-        progressPercent.textContent = "100%";
-        progressStatus.textContent = successMsg;
+        if (progressBarFill) progressBarFill.style.width = "100%";
+        if (progressPercent) progressPercent.textContent = "100%";
+        if (progressStatus) progressStatus.textContent = successMsg;
 
         setTimeout(() => {
-            progressContainer.style.display = "none";
+            if (progressContainer) progressContainer.style.display = "none";
         }, 3000);
     }
 
     function failProgressBar(errorMsg) {
         clearInterval(progressInterval);
-        progressBarFill.style.width = "100%";
-        progressBarFill.style.background = "#ef4444";
-        progressBarFill.style.boxShadow = "0 0 10px rgba(239, 68, 68, 0.5)";
-        progressPercent.textContent = "Error";
-        progressStatus.textContent = errorMsg;
+        if (progressBarFill) {
+            progressBarFill.style.width = "100%";
+            progressBarFill.style.background = "#ef4444";
+            progressBarFill.style.boxShadow = "0 0 10px rgba(239, 68, 68, 0.5)";
+        }
+        if (progressPercent) progressPercent.textContent = "Error";
+        if (progressStatus) progressStatus.textContent = errorMsg;
     }
 
     // Preview Panel Elements
@@ -272,6 +277,13 @@ document.addEventListener("DOMContentLoaded", () => {
             <td><input type="number" value="${rate}" step="0.5" min="0" max="100" class="da-rate" placeholder="e.g. 46"></td>
             <td><button type="button" class="btn btn-danger btn-sm da-remove">✕</button></td>
         `;
+        row.querySelectorAll('input[type="month"]').forEach(input => {
+            input.addEventListener('click', () => {
+                if (typeof input.showPicker === 'function') {
+                    try { input.showPicker(); } catch (e) {}
+                }
+            });
+        });
         row.querySelector(".da-remove").addEventListener("click", () => row.remove());
         tbody.appendChild(row);
     }
@@ -363,12 +375,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function createHraRow(fromVal = "", toVal = "", rateVal = "") {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td><input type="text" class="hra-from" placeholder="E.g., 2023-11" value="${fromVal}" required></td>
-            <td><input type="text" class="hra-to" placeholder="E.g., 2023-12" value="${toVal}" required></td>
-            <td><input type="number" step="0.1" class="hra-rate" placeholder="Rate %" value="${rateVal}" required style="width: 80px;"></td>
+            <td><input type="month" class="hra-from" value="${fromVal}" required></td>
+            <td><input type="month" class="hra-to" value="${toVal}" required></td>
+            <td><input type="number" step="0.1" class="hra-rate" placeholder="Rate %" value="${rateVal}" required style="width: 85px;"></td>
             <td><button type="button" class="btn btn-danger btn-sm btn-delete-row">Remove</button></td>
         `;
         
+        tr.querySelectorAll('input[type="month"]').forEach(input => {
+            input.addEventListener('click', () => {
+                if (typeof input.showPicker === 'function') {
+                    try { input.showPicker(); } catch (e) {}
+                }
+            });
+        });
+
         tr.querySelector(".btn-delete-row").addEventListener("click", () => {
             tr.remove();
         });
@@ -474,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const typeEl = document.querySelector('input[name="arrear_type"]:checked');
         formData.append("arrear_type", typeEl ? typeEl.value : "both");
         
-        btnSubmit.textContent = "📥 Generating Excel...";
+        btnSubmit.innerHTML = `<span class="btn-icon">⏳</span><span class="btn-text">Generating Excel...</span>`;
         btnSubmit.disabled = true;
         startProgressBar("Uploading documents for spreadsheet generation...");
 
@@ -521,7 +541,7 @@ document.addEventListener("DOMContentLoaded", () => {
             failProgressBar("Generation failed: " + err.message);
             alert("Error: " + err.message);
         } finally {
-            btnSubmit.textContent = "📥 Generate & Download";
+            btnSubmit.innerHTML = `<span class="btn-icon">📥</span><span class="btn-text">Generate & Download Arrear Forms</span>`;
             btnSubmit.disabled = false;
         }
     });
