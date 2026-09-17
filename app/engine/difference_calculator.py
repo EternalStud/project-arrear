@@ -86,7 +86,7 @@ def compute_arrears(
             ratio = worked_days / tot_days
         else:
             # Fallback if MA is 0 or not available (e.g. unpaid or salary arrear)
-            column_values = [FITMENT_MATRIX_VALS[step][column_idx] for step in sorted(FITMENT_MATRIX_VALS.keys())]
+            column_values = [FITMENT_MATRIX[step][column_idx] for step in sorted(FITMENT_MATRIX.keys())]
             if drawn["basic"] in column_values or drawn["basic"] == 0:
                 ratio = 1.0
             else:

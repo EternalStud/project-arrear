@@ -61,13 +61,14 @@ def determine_increment_month(doj_str: str) -> str:
     - DOJ between July 1 and Dec 31: July increment.
     - DOJ between Jan 1 and June 30: January increment.
     """
+    clean_doj = str(doj_str).strip().replace("/", "-") if doj_str else ""
     try:
         # DOJ format is usually DD-MM-YYYY
-        doj_date = datetime.strptime(doj_str, "%d-%m-%Y").date()
+        doj_date = datetime.strptime(clean_doj, "%d-%m-%Y").date()
     except Exception:
         try:
             # Try YYYY-MM-DD
-            doj_date = datetime.strptime(doj_str, "%Y-%m-%d").date()
+            doj_date = datetime.strptime(clean_doj, "%Y-%m-%d").date()
         except Exception:
             # Fallback
             return "July"
@@ -89,11 +90,12 @@ def get_admissible_basic(
     Calculates the correct admissible Basic Pay rate for a target month and year,
     applying the annual 3% increment rule using the fitment matrix steps.
     """
+    clean_doj = str(doj_str).strip().replace("/", "-") if doj_str else ""
     try:
-        doj_date = datetime.strptime(doj_str, "%d-%m-%Y").date()
+        doj_date = datetime.strptime(clean_doj, "%d-%m-%Y").date()
     except Exception:
         try:
-            doj_date = datetime.strptime(doj_str, "%Y-%m-%d").date()
+            doj_date = datetime.strptime(clean_doj, "%Y-%m-%d").date()
         except Exception:
             doj_date = date(2023, 11, 16) # Fallback to default
             
@@ -113,20 +115,7 @@ def get_admissible_basic(
     # Traverse year by year from DOJ year to target year
     current_year = doj_date.year
     while True:
-        # Date of next increment
-        # If DOJ is Nov 2023, next increment is July 2024
-        # If DOJ is March 2024, next increment is Jan 2025 (actually next year Jan)
-        # Wait, if DOJ is Jan-Jun, the increment is in January of next year?
-        # Let's clarify: does the increment happen in the very next January/July,
-        # or after 1 year of service?
-        # Typically, a teacher gets their first increment after completing 6 months or in the next cycle.
-        # In Bihar, new joiners get their first increment in the next July (for Jul-Dec group)
-        # or next January (for Jan-Jun group).
-        # Let's verify for Zafar Ali: Joined Nov 2023. First increment drawn in July 2024. That is next July!
-        # So yes, the increment happens on July/Jan of the next calendar year.
-        
         inc_year = current_year
-        # If DOJ is in Nov (increment July), the next increment is in July of the following year
         if increment_month_num == 7 and doj_date.month >= 7:
             inc_year = current_year + 1
         elif increment_month_num == 1:
@@ -140,16 +129,30 @@ def get_admissible_basic(
         current_step += 1
         current_year = inc_year
         
-    if joining_basic:
-        # Dynamically calculate by adding 3% each increment, rounded to nearest 10
-        basic = joining_basic
+    jb_int = None
+    if joining_basic is not None:
+        try:
+            jb_int = int(joining_basic)
+        except Exception:
+            jb_int = None
+
+    column_values = [FITMENT_MATRIX[step][column_idx] for step in sorted(FITMENT_MATRIX.keys())]
+
+    # If an arbitrary custom joining_basic is provided that does NOT exist in the fitment matrix column,
+    # calculate dynamically using the 3% rule rounded to the nearest 10.
+    if jb_int and jb_int not in column_values:
+        basic = jb_int
         num_increments = current_step - starting_step
         for _ in range(num_increments):
             basic = round((basic * 1.03) / 10) * 10
         return basic
-    else:
-        # Cap step at max (20)
-        current_step = min(current_step, 20)
         
-        # Lookup in fitment matrix
+    # Standard official Bihar Government Fitment Matrix lookup
+    if current_step <= 20:
         return FITMENT_MATRIX[current_step][column_idx]
+    else:
+        # If beyond step 20, calculate 3% on top of step 20
+        basic = FITMENT_MATRIX[20][column_idx]
+        for _ in range(current_step - 20):
+            basic = round((basic * 1.03) / 10) * 10
+        return basic
