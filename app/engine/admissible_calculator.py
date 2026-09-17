@@ -98,7 +98,8 @@ def calculate_admissible_for_month(
     joining_day = 1
     if doj_str:
         try:
-            parts = doj_str.split("-")
+            clean_doj = str(doj_str).strip().replace("/", "-")
+            parts = clean_doj.split("-")
             doj_day = int(parts[0])
             doj_month = int(parts[1])
             doj_year = int(parts[2])
@@ -133,16 +134,17 @@ def calculate_admissible_for_month(
         paid_days = worked_days
     else:
         # Standard or LWP pro-rated month
+        is_full_month = pro_ration_ratio >= 0.9999
         basic_std = standard_basic_rate
-        basic_adm = int(round(basic_std * pro_ration_ratio))
+        basic_adm = basic_std if is_full_month else int(round(basic_std * pro_ration_ratio))
         da_adm = int(round(basic_adm * da_rate))
         hra_adm = int(round(basic_adm * hra_rate))
-        ma_adm = int(round(MA_FIXED * pro_ration_ratio))
+        ma_adm = MA_FIXED if is_full_month else int(round(MA_FIXED * pro_ration_ratio))
         
         gross_adm = basic_adm + da_adm + hra_adm + ma_adm
         nps_adm = int(round((basic_adm + da_adm) * 0.10))
         gis_adm = GIS_FIXED
-        paid_days = int(round(pro_ration_ratio * total_days)) if pro_ration_ratio < 1.0 else total_days
+        paid_days = total_days if is_full_month else int(round(pro_ration_ratio * total_days))
 
     return {
         "month_label": month_lbl,

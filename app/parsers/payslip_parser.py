@@ -21,20 +21,20 @@ def parse_payslip(pdf_path: str) -> Dict[str, Any]:
         # Regex mappings for employee metadata
         patterns = {
             "employee_id": [r"Employee Code\s*:\s*(\d+)", r"Employee ID\s*:\s*(\d+)"],
-            "doj": [r"DOJ\s*:\s*([\d-]+)"],
-            "name": [r"Employee Name\s*:\s*(.*?)(?=\s+(?:GPF/PRAN|GPF|PAN|DOJ|Bank|$))"],
+            "doj": [r"DOJ\s*:\s*([\d\-/]+)"],
+            "name": [r"Employee Name\s*:\s*(.*?)(?=\s+(?:GPF/PRAN|GPF|PAN|DOJ|Bank|\n|$))"],
             "pran": [r"(?:GPF/PRAN|GPF|PRAN)\s*:\s*(\d+)"],
             "bank_account": [r"Bank A/C\s*:\s*(\d+)", r"Account No\s*:\s*(\d+)"],
             "ifsc": [r"IFSC Code\s*:\s*([A-Z0-9]+)", r"IFSC\s*:\s*([A-Z0-9]+)"],
             "pan": [r"PAN\s*:\s*([A-Z0-9]+)"],
             "basic_rate": [r"Basic Rate\s*:\s*(\d+)"],
-            "designation": [r"Designation\s*:\s*(.*?)(?=\s*(?:Teachers|Grade|Type|Current|$))"],
+            "designation": [r"Designation\s*:\s*(.*?)(?=\s*(?:Teachers|Grade|Type|Current|\n|$))"],
         }
         
         for key, regexes in patterns.items():
             value = None
             for r in regexes:
-                match = re.search(r, text, re.IGNORECASE)
+                match = re.search(r, text, re.IGNORECASE | re.MULTILINE)
                 if match:
                     value = match.group(1).strip()
                     break

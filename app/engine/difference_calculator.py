@@ -1,4 +1,5 @@
 # difference_calculator.py - Logic for computing the difference (ADMISSIBLE - DRAWN)
+import calendar
 from typing import Dict, List, Any, Optional
 from app.models.monthly_salary import MonthlySalary
 from app.config import FITMENT_MATRIX
@@ -73,15 +74,27 @@ def compute_arrears(
         )
         
         # Check for LWP pro-ration ratio
-        column_values = [FITMENT_MATRIX_VALS[step][column_idx] for step in sorted(FITMENT_MATRIX_VALS.keys())]
-        closest_std_basic = min(column_values, key=lambda x: abs(x - drawn["basic"]))
+        drn_ma = drawn.get("ma", 0)
         
-        # Avoid division by zero
-        ratio = 1.0
-        if drawn["basic"] > 0 and closest_std_basic > 0:
-            if drawn["basic"] < closest_std_basic:
-                # Pro-ration detected (LWP or partial month)
-                ratio = drawn["basic"] / closest_std_basic
+        # If MA was drawn in full (>= 1000), employee worked full month (NO LWP pro-ration)
+        if drn_ma >= 1000:
+            ratio = 1.0
+        elif drn_ma > 0:
+            # Pro-rated month (LWP or partial month) directly indicated by pro-rated MA
+            _, tot_days = calendar.monthrange(year, month_num)
+            worked_days = int(round(drn_ma / 1000.0 * tot_days))
+            ratio = worked_days / tot_days
+        else:
+            # Fallback if MA is 0 or not available (e.g. unpaid or salary arrear)
+            column_values = [FITMENT_MATRIX_VALS[step][column_idx] for step in sorted(FITMENT_MATRIX_VALS.keys())]
+            if drawn["basic"] in column_values or drawn["basic"] == 0:
+                ratio = 1.0
+            else:
+                closest_std_basic = min(column_values, key=lambda x: abs(x - drawn["basic"]))
+                if drawn["basic"] > 0 and closest_std_basic > 0 and drawn["basic"] < closest_std_basic:
+                    ratio = drawn["basic"] / closest_std_basic
+                else:
+                    ratio = 1.0
                 
         # Calculate admissible values
         admissible_months[month_lbl] = calculate_admissible_for_month(
