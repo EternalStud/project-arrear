@@ -815,19 +815,43 @@ num2words>=0.5.13
 
 ## 14. Finalized Business Rules & Decisions
 
-The remaining design decisions have been finalized as follows:
-
-1. **Arrear Period Boundaries**: The system will **auto-detect** all months where drawn ≠ admissible.
-2. **Professional Tax (PT)**: PT is calculated annually and deducted in September. The deduction is based on the annual gross income slab (from the DEO Motihari order):
+1. **Arrear Period Boundaries & Scope**: Teachers explicitly specify the calculation range via the **Arrear Scope Selector** (From Month to To Month). The system maps all affected Financial Years and generates dynamic HRMS statement upload slots accordingly.
+2. **Professional Tax (PT)**: PT is calculated annually and deducted in September based on the annual gross income slab (from the DEO Motihari order):
    - Annual Gross Income up to ₹3,00,000: ₹0 PT
    - Annual Gross Income from ₹3,00,001 to ₹5,00,000: ₹1,000 PT
    - Annual Gross Income from ₹5,00,001 to ₹10,00,000: ₹2,000 PT
    - Annual Gross Income above ₹10,00,001: ₹2,500 PT
    This PT amount is deducted from the Net Pay for September in both Admissible and Drawn columns to maintain exact mathematical consistency.
-3. **Partial First Month**: The joining month is **skipped entirely** from the arrear sheet.
-4. **Number of Days & LWP**:
-   - Total Days of Month is computed dynamically using calendar month/year limits (handling February in leap years correctly).
+3. **Joining Month Pro-Ration & Session Handling**:
+   - The joining month is calculated based on the teacher's Date of Joining (DOJ).
+   - Session support: **Forenoon (FN)** includes the joining day itself; **Afternoon (AN)** starts calculation from the subsequent day.
+   - Admissible Basic, DA, and HRA are pro-rated based on `(Days Served / Total Days in Month)`.
+4. **Number of Days Engine & LWP**:
+   - Total Days of Month is computed dynamically using calendar month/year limits (handling February in leap years like 2024=29 days correctly).
    - LWP (Leave Without Pay) is detected dynamically: if the drawn Basic Pay in any month is less than the standard basic pay rate, the LWP fraction is computed as `Ratio = Drawn Basic / Standard Basic Rate`.
    - Paid Days = `round(Ratio * Total Days of Month)`.
    - All admissible components for that month (Basic, DA, HRA, MA) are pro-rated by multiplying the standard admissible value by this `Ratio`.
-   - The "No of Days" column in the output Excel sheet will be set to `Paid Days`.
+   - Standalone DA Arrear rows (e.g. `Mar-25 (DA Arrear)`) use `0` days so net difference is added without inflating regular salary days.
+5. **Universal Bihar District Writing**:
+   - Supports all 38 districts.
+   - When a custom district is chosen, the name is capitalized and written to Row 1 of both output Excel sheets as `OFFICE, DPO ESTABLISHMENT [DISTRICT]`.
+
+---
+
+## 15. UI/UX & Interactive Progress Architecture
+
+### 15.1 Centric Action Layout
+- The master action container `.actions.actions-centered` is placed directly under `<form id="arrear-form" class="grid-layout">` with `grid-column: 1 / -1;`.
+- Spans across both columns of the desktop grid, centering the `#btn-submit` hero button and the `#progress-container` card horizontally on the page.
+
+### 15.2 Interactive Progress Center
+- **Card Styling**: Elevated `#0b1329` deep navy container with `2px solid #6366f1` glowing border and multi-layer backdrop blur.
+- **Live Status Header**: Animated cyan pulsing radar ring (`.progress-pulse-ring`) accompanied by heading `Generating Arrear Spreadsheet` and live step message.
+- **16px Glowing Progress Track**: Inset-shadowed `#030712` track with `rgba(255, 255, 255, 0.22)` border, multi-stop gradient fill (`#38bdf8` $\to$ `#6366f1` $\to$ `#a855f7` $\to$ `#ec4899`), and animated light-streak shimmer.
+- **4-Step Breadcrumb Chips**:
+  - `1. HRMS Data` $\to$ `2. Salary Slips` $\to$ `3. HRA/DA Matrix` $\to$ `4. Excel Generation`
+  - Chips dynamically highlight with cyan pill glow during execution and convert to green checkmarks (`✓`) on completion.
+
+### 15.3 File Synchronization & Cache Busting Protocol
+- Static assets in `frontend/` are the source of truth and must always remain synchronized with root files (`index.html`, `style.css`, `script.js`).
+- Version query strings (e.g. `?v=3.0`) are incremented on asset links to prevent stale browser caching.
