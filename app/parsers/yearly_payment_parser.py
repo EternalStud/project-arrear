@@ -122,7 +122,11 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                 "gis": 0,
                 "professional_tax": 0,
                 "net": 0,
-                "arrear_drawn": 0
+                "arrear_drawn": 0,
+                "arrear_gross": 0,
+                "arrear_nps": 0,
+                "arrear_net": 0,
+                "arrear_component": None
             }
             
         # 3. Extract salary components from all tables
@@ -139,10 +143,20 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
             "net": ["total net", "net amount", "netamount"]
         }
         
+        # Check full document text to determine default arrear component
+        full_pdf_text = " ".join((p.extract_text() or "").lower() for p in pdf.pages)
+        default_arr_comp = "da"
+        if "salary arrear" in full_pdf_text or "automatic salary" in full_pdf_text:
+            default_arr_comp = "basic"
+        elif "hra arrear" in full_pdf_text:
+            default_arr_comp = "hra"
+
         # We will loop through all tables and search for rows matching these keys
+        seen_other_payment_detail = False
         for page in pdf.pages:
             page_text = (page.extract_text() or "").lower()
-            is_other_detail_page = "other payment detail" in page_text or "other bill" in page_text
+            if "other payment detail" in page_text or "other bill" in page_text:
+                seen_other_payment_detail = True
             
             tables = page.extract_tables()
             for table in tables:
@@ -154,9 +168,19 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                         continue
                     row_name_clean = re.sub(r'\s+', ' ', row_name).strip().lower()
                     
-                    if is_other_detail_page:
+                    if seen_other_payment_detail:
+                        # In Other Payment Detail, only parse 12-month column-aligned rows:
+                        # Gross Amount, Deduction Amount, Net Amount, Total Other Bill
+                        is_gross = "gross amount" in row_name_clean
+                        is_ded = "deduction amount" in row_name_clean
+                        is_net = "net amount" in row_name_clean or "total other" in row_name_clean
+                        
+                        if not (is_gross or is_ded or is_net):
+                            # Skip misaligned sub-breakdowns (e.g. per-voucher NPS contribution tables)
+                            continue
+                            
                         # Detect arrear component (da, basic, hra) from table context
-                        arr_comp = "da"
+                        arr_comp = default_arr_comp
                         table_str = str(table).lower()
                         if "da" in table_str or "dearness" in table_str:
                             arr_comp = "da"
@@ -165,7 +189,6 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                         elif "hra" in table_str or "house rent" in table_str:
                             arr_comp = "hra"
                             
-                        # Extract arrear drawn, gross, and nps from Other Payment Detail section
                         for col_idx, info in month_mappings.items():
                             if col_idx < len(row):
                                 val_str = row[col_idx]
@@ -174,15 +197,15 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                                     val = int(val_clean) if val_clean else 0
                                     if val > 0:
                                         monthly_data[info["month_label"]]["arrear_component"] = arr_comp
-                                        if "gross" in row_name_clean:
-                                            monthly_data[info["month_label"]]["arrear_gross"] = val
-                                        elif "deduction" in row_name_clean or "nps" in row_name_clean:
-                                            monthly_data[info["month_label"]]["arrear_nps"] = val
-                                        elif "total other" in row_name_clean or "net" in row_name_clean:
-                                            monthly_data[info["month_label"]]["arrear_net"] = val
-                                            monthly_data[info["month_label"]]["arrear_drawn"] = val
+                                        if is_gross:
+                                            monthly_data[info["month_label"]]["arrear_gross"] = max(monthly_data[info["month_label"]].get("arrear_gross", 0), val)
+                                        elif is_ded:
+                                            monthly_data[info["month_label"]]["arrear_nps"] = max(monthly_data[info["month_label"]].get("arrear_nps", 0), val)
+                                        elif is_net:
+                                            monthly_data[info["month_label"]]["arrear_net"] = max(monthly_data[info["month_label"]].get("arrear_net", 0), val)
+                                            monthly_data[info["month_label"]]["arrear_drawn"] = monthly_data[info["month_label"]]["arrear_net"]
                     else:
-                        # Regular PayBill components
+                        # Regular PayBill components (Pages 1 to 3)
                         matched_key = None
                         for key, keywords in row_mappings.items():
                             if any(kw in row_name_clean for kw in keywords):
@@ -197,7 +220,9 @@ def parse_yearly_payment(pdf_path: str) -> Dict[str, Any]:
                                         # Remove commas or spaces, extract integer
                                         val_clean = re.sub(r'[^\d]', '', val_str)
                                         val = int(val_clean) if val_clean else 0
-                                        monthly_data[info["month_label"]][matched_key] = val
+                                        # Never overwrite an already parsed positive value with 0
+                                        if val > 0 or monthly_data[info["month_label"]][matched_key] == 0:
+                                            monthly_data[info["month_label"]][matched_key] = val
 
     # Verify if gross or net is zero for some months, meaning they didn't get paid (we shouldn't process them)
     filtered_monthly_data = {}
