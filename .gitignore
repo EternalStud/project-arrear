@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Virtual environments
+venv/
+.venv/
+env/
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -12,10 +17,20 @@ __pycache__/
 ehthumbs.db
 Thumbs.db
 
-# Output test files
-output_test.xlsx
-screenshot.jpg
-screenshot_*.jpg
+# Sensitive local sample documents & test archives
+local_samples/
+*Input of*
+/Input of*
+/ Input of*
+*.pdf
 
-# Local HEIC and raw screenshots
+# Screenshots and media
 *.heic
+*.jpeg
+*.jpg
+screenshot*.jpg
+
+# Excel output & temporary test files (preserve templates)
+*.xlsx
+!templates/*.xlsx
+output*.xlsx
