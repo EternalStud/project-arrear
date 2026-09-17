@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2.6">
-    <script src="script.js?v=2.6" defer></script>
+    <link rel="stylesheet" href="style.css?v=3.0">
+    <script src="script.js?v=3.0" defer></script>
 </head>
 <body>
     <div class="glass-bg"></div>
@@ -310,24 +310,44 @@
                             </tbody>
                         </table>
                     </div>
+                </section>
 
-                    <div class="actions actions-centered">
-                        <button type="submit" class="btn btn-submit-hero" id="btn-submit" disabled>
-                            <span class="btn-icon">📥</span>
-                            <span class="btn-text">Generate & Download Arrear Forms</span>
-                        </button>
+                <!-- Centric Master Action Bar & High-Tier Progress Center (Spanning Full Layout) -->
+                <div class="actions actions-centered">
+                    <button type="submit" class="btn btn-submit-hero" id="btn-submit" disabled>
+                        <span class="btn-icon">📥</span>
+                        <span class="btn-text">Generate & Download Arrear Forms</span>
+                    </button>
 
-                        <div class="progress-container" id="progress-container" style="display: none;">
-                            <div class="progress-header">
-                                <span class="progress-status" id="progress-status">Uploading documents...</span>
+                    <!-- Top-Tier Interactive Progress Center -->
+                    <div class="progress-container" id="progress-container" style="display: none;">
+                        <div class="progress-top-row">
+                            <div class="progress-title-badge">
+                                <span class="progress-pulse-ring"></span>
+                                <div class="progress-status-group">
+                                    <span class="progress-heading">Generating Arrear Spreadsheet</span>
+                                    <span class="progress-status" id="progress-status">Uploading & analyzing documents...</span>
+                                </div>
+                            </div>
+                            <div class="progress-badge">
                                 <span class="progress-percent" id="progress-percent">0%</span>
                             </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                        </div>
+
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="progress-bar-fill">
+                                <span class="progress-bar-light"></span>
                             </div>
                         </div>
+
+                        <div class="progress-steps" id="progress-steps">
+                            <div class="p-step active" id="step-1"><span class="p-step-num">1</span> HRMS Data</div>
+                            <div class="p-step" id="step-2"><span class="p-step-num">2</span> Salary Slips</div>
+                            <div class="p-step" id="step-3"><span class="p-step-num">3</span> HRA/DA Matrix</div>
+                            <div class="p-step" id="step-4"><span class="p-step-num">4</span> Excel Generation</div>
+                        </div>
                     </div>
-                </section>
+                </div>
             </form>
         </main>
 

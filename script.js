@@ -39,23 +39,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressBarFill = document.getElementById("progress-bar-fill");
     let progressInterval = null;
 
+    function getStepLabel(idx) {
+        const labels = ["HRMS Data", "Salary Slips", "HRA/DA Matrix", "Excel Generation"];
+        return labels[idx] || "";
+    }
+
+    function updateStepIndicator(percent) {
+        const stepIds = ["step-1", "step-2", "step-3", "step-4"];
+        let activeIdx = 0;
+        if (percent >= 75) activeIdx = 3;
+        else if (percent >= 50) activeIdx = 2;
+        else if (percent >= 25) activeIdx = 1;
+        else activeIdx = 0;
+
+        stepIds.forEach((id, idx) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (idx < activeIdx) {
+                el.className = "p-step completed";
+                el.innerHTML = `<span class="p-step-num">✓</span> ${getStepLabel(idx)}`;
+            } else if (idx === activeIdx) {
+                el.className = "p-step active";
+                el.innerHTML = `<span class="p-step-num">${idx + 1}</span> ${getStepLabel(idx)}`;
+            } else {
+                el.className = "p-step";
+                el.innerHTML = `<span class="p-step-num">${idx + 1}</span> ${getStepLabel(idx)}`;
+            }
+        });
+    }
+
     function startProgressBar(initialMsg) {
         if (!progressContainer) return;
         progressContainer.style.display = "block";
         if (progressBarFill) {
             progressBarFill.style.width = "0%";
-            progressBarFill.style.background = "linear-gradient(90deg, #38bdf8 0%, #6366f1 50%, #ec4899 100%)";
-            progressBarFill.style.boxShadow = "0 0 14px rgba(56, 189, 248, 0.8), 0 0 8px rgba(236, 72, 153, 0.6)";
+            progressBarFill.style.background = "linear-gradient(90deg, #38bdf8 0%, #6366f1 45%, #a855f7 75%, #ec4899 100%)";
+            progressBarFill.style.boxShadow = "0 0 16px rgba(56, 189, 248, 0.8), 0 0 10px rgba(236, 72, 153, 0.6)";
         }
         if (progressPercent) progressPercent.textContent = "0%";
         if (progressStatus) progressStatus.textContent = initialMsg;
 
+        updateStepIndicator(0);
+
         let percent = 0;
         const steps = [
-            { limit: 25, msg: "Uploading HRMS files..." },
-            { limit: 50, msg: "Analyzing salary slips & statements..." },
-            { limit: 75, msg: "Calculating admissible pay rate slabs..." },
-            { limit: 95, msg: "Compiling Excel formulas & layout..." }
+            { limit: 25, msg: "Uploading HRMS statements & verifying format..." },
+            { limit: 50, msg: "Parsing salary slips & monthly deductions..." },
+            { limit: 75, msg: "Computing admissible basic, DA & HRA rates..." },
+            { limit: 95, msg: "Compiling official audit formulas & Excel sheets..." }
         ];
 
         let currentStepIndex = 0;
@@ -73,18 +104,28 @@ document.addEventListener("DOMContentLoaded", () => {
             if (progressPercent) progressPercent.textContent = percent + "%";
             if (progressStatus) progressStatus.textContent = currentStep.msg;
 
+            updateStepIndicator(percent);
+
             if (percent >= currentStep.limit) {
                 currentStepIndex++;
             }
-        }, 120);
+        }, 110);
     }
 
     function finishProgressBar(successMsg) {
         clearInterval(progressInterval);
+        const stepIds = ["step-1", "step-2", "step-3", "step-4"];
+        stepIds.forEach((id, idx) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.className = "p-step completed";
+                el.innerHTML = `<span class="p-step-num">✓</span> ${getStepLabel(idx)}`;
+            }
+        });
         if (progressBarFill) {
             progressBarFill.style.width = "100%";
             progressBarFill.style.background = "linear-gradient(90deg, #10b981 0%, #059669 100%)";
-            progressBarFill.style.boxShadow = "0 0 14px rgba(16, 185, 129, 0.8)";
+            progressBarFill.style.boxShadow = "0 0 16px rgba(16, 185, 129, 0.85)";
         }
         if (progressPercent) progressPercent.textContent = "100%";
         if (progressStatus) progressStatus.textContent = successMsg;
@@ -99,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (progressBarFill) {
             progressBarFill.style.width = "100%";
             progressBarFill.style.background = "linear-gradient(90deg, #ef4444 0%, #dc2626 100%)";
-            progressBarFill.style.boxShadow = "0 0 14px rgba(239, 68, 68, 0.8)";
+            progressBarFill.style.boxShadow = "0 0 16px rgba(239, 68, 68, 0.85)";
         }
         if (progressPercent) progressPercent.textContent = "Error";
         if (progressStatus) progressStatus.textContent = errorMsg;
