@@ -22,7 +22,7 @@
             <p class="portal-desc">Audit-compliant arrear calculation for BPSC TRE 1, TRE 2, TRE 3 , Exclusive and HEADMASTER  across all Bihar districts</p>
             <div style="margin-top: 14px;">
                 <button type="button" class="btn btn-secondary btn-sm" id="btn-open-guide" onclick="document.getElementById('user-guide-modal').style.display='flex'" style="border-radius: 20px; padding: 7px 18px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500;">
-                    📖 User Guide & Instructions
+                    📖 उपयोगकर्ता मार्गदर्शिका (User Guide)
                 </button>
             </div>
         </header>
@@ -43,17 +43,41 @@
                     </div>
 
                     <div class="scope-selector">
-                        <div class="input-group">
-                            <label for="scope-start">From (Start Month) <span class="required-star">*</span></label>
-                            <input type="month" id="scope-start" value="2023-03">
+                        <div class="scope-input-card" id="card-scope-start">
+                            <div class="scope-input-header">
+                                <span class="scope-header-icon">📅</span>
+                                <label for="scope-start">From (प्रारंभ माह) <span class="required-star">*</span></label>
+                            </div>
+                            <div class="scope-input-wrapper">
+                                <input type="month" id="scope-start" value="2023-03" title="माह चुनने के लिए क्लिक करें (Click to pick month)">
+                                <div class="scope-picker-badge">
+                                    <span>🗓️</span>
+                                    <span class="picker-btn-text">बदलें</span>
+                                </div>
+                            </div>
+                            <div class="scope-help-text">👆 क्लिक करके प्रारंभ माह बदलें</div>
                         </div>
-                        <span class="scope-arrow">→</span>
-                        <div class="input-group">
-                            <label for="scope-end">To (End Month) <span class="required-star">*</span></label>
-                            <input type="month" id="scope-end" value="2026-02">
+
+                        <div class="scope-arrow-container">
+                            <span class="scope-arrow">➔</span>
+                        </div>
+
+                        <div class="scope-input-card" id="card-scope-end">
+                            <div class="scope-input-header">
+                                <span class="scope-header-icon">📅</span>
+                                <label for="scope-end">To (अंतिम माह) <span class="required-star">*</span></label>
+                            </div>
+                            <div class="scope-input-wrapper">
+                                <input type="month" id="scope-end" value="2026-02" title="माह चुनने के लिए क्लिक करें (Click to pick month)">
+                                <div class="scope-picker-badge">
+                                    <span>🗓️</span>
+                                    <span class="picker-btn-text">बदलें</span>
+                                </div>
+                            </div>
+                            <div class="scope-help-text">👆 क्लिक करके अंतिम माह बदलें</div>
                         </div>
                     </div>
-                    <div class="scope-info" id="scope-info">Covers 3 financial years: 2023-24, 2024-25, 2025-26</div>
+                    <div class="scope-info" id="scope-info">🗓️ चयनित एरियर दायरा: March 2023 से February 2026 (कुल 36 माह • 3 वित्तीय वर्ष: 2023-24, 2024-25, 2025-26)</div>
                     
                     <div class="section-divider"></div>
 
@@ -313,48 +337,48 @@
             <button class="modal-close-btn" id="btn-close-guide" onclick="document.getElementById('user-guide-modal').style.display='none'">×</button>
             <div class="modal-header-box">
                 <div class="modal-icon">📖</div>
-                <h2>Portal User Guide & Instructions</h2>
-                <p>Complete guide to generating audit-compliant Bihar Teacher Arrear Forms (All 38 Districts)</p>
+                <h2>पोर्टल मार्गदर्शिका एवं आवश्यक निर्देश</h2>
+                <p>बिहार के सभी 38 जिलों के शिक्षकों (TRE 1, TRE 2, TRE 3, विशिष्ट शिक्षक एवं प्रधानाध्यापक) हेतु DPO स्थापना ऑडिट-सम्मत एरियर गणना मार्गदर्शिका</p>
             </div>
             
             <div class="guide-scroll-body">
                 <div class="guide-section">
-                    <h3>🚀 1. Prerequisites (Documents Needed)</h3>
+                    <h3>🚀 1. आवश्यक दस्तावेज (Prerequisites Documents)</h3>
                     <ul>
-                        <li><strong>Latest Pay Slip PDF:</strong> Auto-extracts Name, PRAN, PAN, Bank Account, IFSC, and Date of Joining (DOJ).</li>
-                        <li><strong>Yearly Payment Statement PDFs:</strong> Auto-extracts monthly drawn salary. Supports full 12-month or ongoing/partial FY statements.</li>
+                        <li><strong>नवीनतम पे-स्लिप (Latest Pay Slip PDF):</strong> इससे आपका नाम, PRAN नंबर, PAN, बैंक खाता संख्या, IFSC कोड और योगदान तिथि (DOJ) अपने-आप निष्कासित (Auto-extract) हो जाती है।</li>
+                        <li><strong>वार्षिक भुगतान विवरणी (HRMS Yearly Payment Statements PDF):</strong> इससे प्रत्येक माह का आहरित (drawn) वेतन स्वतः प्राप्त होता है। यह 12 माह के पूर्ण वित्तीय वर्ष अथवा चालू/अपूर्ण वित्तीय वर्ष दोनों के स्टेटमेंट को सपोर्ट करता है।</li>
                     </ul>
                 </div>
 
                 <div class="guide-section">
-                    <h3>📑 2. Step-by-Step Instructions</h3>
+                    <h3>📑 2. चरण-दर-चरण प्रक्रिया (Step-by-Step Instructions)</h3>
                     <ol>
-                        <li><strong>Arrear Scope:</strong> Select From & To months. <em>Recommendation:</em> Set From month to your joining month and To month to till date for an overall complete claim. Upload slots adjust automatically.</li>
-                        <li><strong>Upload PDFs:</strong> Drag & drop or browse your HRMS statements and pay slip.</li>
-                        <li><strong>District & School Details:</strong> Select your District (supports all 38 districts of Bihar) and enter Block Name and School Name. All names are automatically formatted in capital letters on the official DPO format.</li>
-                        <li><strong>Designation & Basic Fallbacks:</strong> If payslip fails to auto-detect designation, select it manually. If joining month was partial or non-standard, enter your <em>Joining Basic Pay (₹)</em> to lock in the statutory Fitment Matrix step.</li>
-                        <li><strong>HRA Rates & Multi-School Transfers:</strong> Choose HRA presets (4%→5%, 7.5%→10%, or Corrected Joiner). If you transferred between rural and urban schools during the arrear period, add separate rows for each school's period.</li>
+                        <li><strong>एरियर दायरा (Arrear Scope):</strong> <strong>From (प्रारंभ माह)</strong> एवं <strong>To (अंतिम माह)</strong> चुनें। <em>परामर्श:</em> संपूर्ण एरियर क्लेम करने हेतु अपने योगदान माह (Joining Month) से वर्तमान माह (Till Date) तक चुनें। इसके अनुसार अपलोड स्लॉट स्वतः तैयार होंगे।</li>
+                        <li><strong>दस्तावेज अपलोड करें (Upload PDFs):</strong> संबंधित वित्तीय वर्षों के HRMS स्टेटमेंट और नवीनतम पे-स्लिप PDF को ड्रैग एवं ड्रॉप करें या ब्राउज़ करके चुनें।</li>
+                        <li><strong>जिला, प्रखंड एवं विद्यालय विवरण:</strong> अपना जिला चुनें (बिहार के सभी 38 जिले उपलब्ध हैं) तथा प्रखंड (Block) एवं विद्यालय (School) का नाम दर्ज करें। आधिकारिक DPO फॉर्मेट पर सभी विवरण स्वतः बड़े अक्षरों (CAPITAL) में लिखे जाएंगे।</li>
+                        <li><strong>पदनाम एवं मूल वेतन (Designation & Basic Fallback):</strong> यदि पे-स्लिप से पदनाम स्वतः डिटेक्ट न हो तो ड्रॉपडाउन से चुनें। यदि योगदान माह आंशिक या असामान्य था, तो अपना <em>Joining Basic Pay (₹)</em> दर्ज करें जिससे वैधानिक 7th Pay Matrix स्तर लॉक हो सके।</li>
+                        <li><strong>HRA दरें एवं स्थानांतरण (HRA Rates & Multi-School):</strong> उपयुक्त HRA प्रीसेट चुनें (4%→5%, 7.5%→10%, या संशोधित)। यदि एरियर अवधि के दौरान आपका ग्रामीण से अनुमंडल/शहरी विद्यालय में तबादला हुआ है, तो <strong>"+ Add HRA Range"</strong> जोड़कर अलग-अलग अवधि की दरें दर्ज करें।</li>
                     </ol>
                 </div>
 
                 <div class="guide-section">
-                    <h3>🧮 3. Excel Formulas & Arrear Deduction</h3>
-                    <p>The generated Excel embeds live formulas matching official DPO formats:</p>
+                    <h3>🧮 3. एक्सेल फॉर्मूला एवं एरियर कटौती (Excel Formulas & Rules)</h3>
+                    <p>जेनरेट की गई एक्सेल शीट में आधिकारिक DPO फॉर्मेट के अनुसार लाइव फॉर्मूले अंतर्निहित हैं:</p>
                     <ul>
-                        <li><strong>Admissible Net:</strong> <code>Gross - NPS - GIS - Professional Tax</code></li>
-                        <li><strong>Drawn Net:</strong> <code>Regular Drawn Gross - NPS - GIS</code></li>
-                        <li><strong>Arrear Row:</strong> If an arrear bill was drawn in a month, an <em>Arrear Row</em> is added right below that month. Arrear Gross is placed under Basic, Arrear NPS under NPS, and Arrear Net under Net Amount.</li>
-                        <li><strong>Net Difference:</strong> Automatically subtracts Arrear Row Net from total arrear payable.</li>
+                        <li><strong>अनुमन्य शुद्ध वेतन (Admissible Net):</strong> <code>Gross - NPS - GIS - Professional Tax</code></li>
+                        <li><strong>आहरित शुद्ध वेतन (Drawn Net):</strong> <code>Regular Drawn Gross - NPS - GIS</code></li>
+                        <li><strong>पूर्व में आहरित एरियर (Arrear Row):</strong> यदि किसी माह में पूर्व में कोई एरियर बिल आहरित हुआ था, तो उस माह के ठीक नीचे एक <em>Arrear Row</em> जोड़ी जाती है। एरियर ग्रॉस को बेसिक में, एरियर NPS को NPS में और शुद्ध राशि को Net Amount में रखा जाता है।</li>
+                        <li><strong>देय शुद्ध एरियर (Net Difference):</strong> कुल अनुमन्य राशि में से नियमित आहरित तथा पूर्व में आहरित एरियर की शुद्ध राशि स्वतः घटाई जाती है।</li>
                     </ul>
                 </div>
 
                 <div class="guide-section warning-guide-box">
-                    <h3>🛠️ 4. Manual Verification & Troubleshooting</h3>
-                    <p><strong>Value Discrepancy Tip:</strong> If any month in the generated Excel has a discrepancy compared to your official records, verify that month against your HRMS Yearly Payment Statement. You can directly paste or type the correct drawn value into the Excel sheet — all formulas will instantly recalculate the totals automatically!</p>
+                    <h3>🛠️ 4. सत्यापन एवं सुधार (Verification & Troubleshooting)</h3>
+                    <p><strong>आहरित वेतन में अंतर होने पर सुझाव:</strong> यदि जेनरेट की गई एक्सेल शीट के किसी माह के आहरित मान में आपके बैंक/ट्रेजरी रिकॉर्ड की तुलना में कोई अंतर दिखे, तो अपनी HRMS Yearly Payment Statement से मिलान करें। आप एक्सेल शीट में सीधे सही आहरित मान टाइप या पेस्ट कर सकते हैं — सभी फॉर्मूले और कुल योग (Totals) तुरंत अपने-आप पुनः परिकलित हो जाएंगे!</p>
                 </div>
             </div>
 
-            <button class="btn btn-primary" id="btn-guide-ok" onclick="document.getElementById('user-guide-modal').style.display='none'" style="margin-top: 16px; width: 100%;">Got it, Close</button>
+            <button class="btn btn-primary" id="btn-guide-ok" onclick="document.getElementById('user-guide-modal').style.display='none'" style="margin-top: 16px; width: 100%;">समझ गया, बंद करें (Close)</button>
         </div>
     </div>
 </body>

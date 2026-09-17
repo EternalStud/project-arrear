@@ -133,13 +133,33 @@ document.addEventListener("DOMContentLoaded", () => {
         return fys;
     }
 
+    function formatMonthYear(val) {
+        if (!val) return "";
+        const [y, m] = val.split("-").map(Number);
+        const date = new Date(y, m - 1, 1);
+        return date.toLocaleString('en-IN', { month: 'short', year: 'numeric' });
+    }
+
     function regenerateUploadSlots() {
         const startVal = document.getElementById("scope-start").value;
         const endVal = document.getElementById("scope-end").value;
         const fys = calculateFinancialYears(startVal, endVal);
         
-        document.getElementById("scope-info").textContent = 
-            `Covers ${fys.length} financial year${fys.length > 1 ? 's' : ''}: ${fys.map(f => f.label).join(", ")}`;
+        let monthCountText = "";
+        if (startVal && endVal) {
+            const [sy, sm] = startVal.split("-").map(Number);
+            const [ey, em] = endVal.split("-").map(Number);
+            const totalMonths = (ey - sy) * 12 + (em - sm) + 1;
+            if (totalMonths > 0) {
+                monthCountText = `कुल ${totalMonths} माह • `;
+            }
+        }
+        
+        const scopeInfoEl = document.getElementById("scope-info");
+        if (scopeInfoEl) {
+            scopeInfoEl.innerHTML = 
+                `🗓️ <strong>चयनित एरियर दायरा (Active Scope):</strong> ${formatMonthYear(startVal)} से ${formatMonthYear(endVal)} (${monthCountText}${fys.length} वित्तीय वर्ष: ${fys.map(f => f.label).join(", ")})`;
+        }
         
         const grid = document.getElementById("upload-grid");
         grid.innerHTML = "";
@@ -281,6 +301,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("scope-start").addEventListener("change", regenerateUploadSlots);
     document.getElementById("scope-end").addEventListener("change", regenerateUploadSlots);
+
+    // Enhanced month card click handling & native picker trigger
+    ['card-scope-start', 'card-scope-end'].forEach(cardId => {
+        const card = document.getElementById(cardId);
+        if (card) {
+            card.addEventListener('click', (e) => {
+                const input = card.querySelector('input[type="month"]');
+                if (input && e.target !== input) {
+                    if (typeof input.showPicker === 'function') {
+                        try { input.showPicker(); } catch (err) { input.focus(); }
+                    } else {
+                        input.focus();
+                    }
+                }
+            });
+        }
+    });
+
+    ['scope-start', 'scope-end'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('click', () => {
+                if (typeof input.showPicker === 'function') {
+                    try { input.showPicker(); } catch (err) {}
+                }
+            });
+        }
+    });
 
     // District selection & custom input
     const districtSelect = document.getElementById("district");

@@ -785,50 +785,160 @@ header h1 {
     box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
-/* Arrear Scope Section */
+/* Arrear Scope Section & Prominent Month Selector */
 .scope-description {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--text-secondary);
     margin-bottom: 16px;
+    line-height: 1.5;
 }
 
 .scope-selector {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.scope-arrow {
-    color: var(--primary-color);
-    font-size: 1.3rem;
-    font-weight: 600;
+.scope-input-card {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1.5px solid rgba(99, 102, 241, 0.35);
+    border-radius: 14px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    position: relative;
 }
 
-.scope-info {
-    font-size: 0.82rem;
-    color: var(--accent-color);
-    padding: 8px 12px;
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.15);
-    border-radius: 8px;
+.scope-input-card:hover {
+    border-color: #818cf8;
+    background: rgba(30, 27, 75, 0.45);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+    transform: translateY(-2px);
+}
+
+.scope-input-card:focus-within {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.scope-input-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     margin-bottom: 8px;
 }
 
-input[type="month"] {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 10px 14px;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 0.9rem;
-    outline: none;
+.scope-header-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.scope-input-header label {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #c7d2fe;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+}
+
+.scope-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
     width: 100%;
 }
 
-input[type="month"]:focus {
-    border-color: var(--accent-color);
+.scope-input-wrapper input[type="month"] {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9px;
+    padding: 10px 42px 10px 12px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.scope-input-wrapper input[type="month"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(1) brightness(1.5);
+    opacity: 0.85;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+}
+
+.scope-input-wrapper input[type="month"]:hover {
+    border-color: rgba(99, 102, 241, 0.6);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.scope-picker-badge {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: rgba(99, 102, 241, 0.25);
+    border: 1px solid rgba(99, 102, 241, 0.45);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: #e0e7ff;
+    font-weight: 500;
+}
+
+.scope-help-text {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    letter-spacing: 0.2px;
+}
+
+.scope-arrow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+.scope-arrow {
+    color: #818cf8;
+    font-size: 1.4rem;
+    font-weight: 700;
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+}
+
+.scope-info {
+    font-size: 0.85rem;
+    color: #c7d2fe;
+    padding: 10px 14px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
 }
 
 /* Fitment Badge */
@@ -1176,15 +1286,22 @@ footer .heart {
         gap: 10px;
     }
 
-    .scope-selector .input-group {
+    .scope-input-card {
         width: 100%;
+        padding: 12px 14px;
+    }
+
+    .scope-arrow-container {
+        padding: 4px 0;
+        display: flex;
+        justify-content: center;
     }
 
     .scope-arrow {
         align-self: center;
         transform: rotate(90deg);
         margin: 2px 0;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
 
     .radio-group {
