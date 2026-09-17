@@ -302,12 +302,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("scope-start").addEventListener("change", regenerateUploadSlots);
     document.getElementById("scope-end").addEventListener("change", regenerateUploadSlots);
 
-    // Enhanced month card click handling & native picker trigger
-    ['card-scope-start', 'card-scope-end'].forEach(cardId => {
-        const card = document.getElementById(cardId);
-        if (card) {
-            card.addEventListener('click', (e) => {
-                const input = card.querySelector('input[type="month"]');
+    // Enhanced month box click handling & native picker trigger
+    ['box-scope-start', 'box-scope-end'].forEach(boxId => {
+        const box = document.getElementById(boxId);
+        if (box) {
+            box.addEventListener('click', (e) => {
+                const input = box.querySelector('input[type="month"]');
                 if (input && e.target !== input) {
                     if (typeof input.showPicker === 'function') {
                         try { input.showPicker(); } catch (err) { input.focus(); }

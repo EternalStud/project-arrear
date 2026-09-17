@@ -785,7 +785,7 @@ header h1 {
     box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
-/* Arrear Scope Section & Prominent Month Selector */
+/* Arrear Scope Section & Minimalist Top-Tier Month Selector */
 .scope-description {
     font-size: 0.88rem;
     color: var(--text-secondary);
@@ -794,136 +794,116 @@ header h1 {
 }
 
 .scope-selector {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     gap: 16px;
+    align-items: end;
     margin-bottom: 14px;
     width: 100%;
     box-sizing: border-box;
 }
 
-.scope-input-card {
-    flex: 1;
-    background: rgba(15, 23, 42, 0.75);
-    border: 1.5px solid rgba(99, 102, 241, 0.35);
-    border-radius: 14px;
-    padding: 12px 14px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    box-sizing: border-box;
-    position: relative;
-}
-
-.scope-input-card:hover {
-    border-color: #818cf8;
-    background: rgba(30, 27, 75, 0.45);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
-    transform: translateY(-2px);
-}
-
-.scope-input-card:focus-within {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 8px 24px rgba(99, 102, 241, 0.3);
-}
-
-.scope-input-header {
+.scope-field {
     display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
 }
 
-.scope-header-icon {
-    font-size: 1rem;
-    line-height: 1;
-}
-
-.scope-input-header label {
-    font-size: 0.84rem;
+.scope-label {
+    font-size: 0.85rem;
     font-weight: 600;
     color: #c7d2fe;
     letter-spacing: 0.2px;
-    cursor: pointer;
 }
 
-.scope-input-wrapper {
+.scope-box {
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
-}
-
-.scope-input-wrapper input[type="month"] {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 9px;
-    padding: 10px 42px 10px 12px;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 600;
-    outline: none;
-    width: 100%;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 0 14px;
+    height: 48px;
     cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     box-sizing: border-box;
 }
 
-.scope-input-wrapper input[type="month"]::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    filter: invert(1) brightness(1.5);
-    opacity: 0.85;
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
+.scope-box:hover {
+    border-color: rgba(99, 102, 241, 0.7);
+    background: rgba(30, 27, 75, 0.45);
+    box-shadow: 0 6px 22px rgba(99, 102, 241, 0.22);
+    transform: translateY(-1px);
 }
 
-.scope-input-wrapper input[type="month"]:hover {
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(0, 0, 0, 0.5);
+.scope-box:focus-within {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 6px 20px rgba(99, 102, 241, 0.3);
 }
 
-.scope-picker-badge {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
+.scope-box-icon {
+    font-size: 1.15rem;
+    margin-right: 10px;
     pointer-events: none;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    background: rgba(99, 102, 241, 0.25);
-    border: 1px solid rgba(99, 102, 241, 0.45);
-    border-radius: 6px;
-    font-size: 0.75rem;
-    color: #e0e7ff;
-    font-weight: 500;
+    flex-shrink: 0;
+    line-height: 1;
 }
 
-.scope-help-text {
-    display: block;
-    margin-top: 6px;
-    font-size: 0.75rem;
+.scope-box input[type="month"] {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.98rem;
+    font-weight: 600;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    padding: 0;
+    box-shadow: none;
+}
+
+/* Make webkit calendar picker cover the ENTIRE box so clicking ANYWHERE opens it instantly */
+.scope-box input[type="month"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.scope-box-chevron {
+    font-size: 0.85rem;
     color: #94a3b8;
-    letter-spacing: 0.2px;
+    pointer-events: none;
+    margin-left: 8px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.scope-arrow-container {
+.scope-box:hover .scope-box-chevron {
+    color: #c7d2fe;
+    transform: translateY(1px);
+}
+
+.scope-connector {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 4px;
+    height: 48px;
 }
 
 .scope-arrow {
     color: #818cf8;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 700;
     filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
 }
@@ -939,6 +919,60 @@ header h1 {
     line-height: 1.5;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
+}
+
+/* Centered Top-Tier Generate & Download Action */
+.actions.actions-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.btn-submit-hero {
+    min-width: 320px;
+    padding: 15px 40px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #7c3aed 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45), 0 0 15px rgba(124, 58, 237, 0.25);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-submit-hero:not(:disabled):hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6), 0 0 25px rgba(124, 58, 237, 0.4);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-submit-hero:not(:disabled):active {
+    transform: translateY(0) scale(0.99);
+}
+
+.btn-submit-hero:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.btn-submit-hero .btn-icon {
+    font-size: 1.25rem;
+    line-height: 1;
 }
 
 /* Fitment Badge */
@@ -1281,27 +1315,31 @@ footer .heart {
     }
 
     .scope-selector {
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: 1fr;
         gap: 10px;
     }
 
-    .scope-input-card {
-        width: 100%;
-        padding: 12px 14px;
-    }
-
-    .scope-arrow-container {
-        padding: 4px 0;
-        display: flex;
-        justify-content: center;
+    .scope-connector {
+        height: auto;
+        padding: 2px 0;
     }
 
     .scope-arrow {
-        align-self: center;
         transform: rotate(90deg);
-        margin: 2px 0;
-        font-size: 1.3rem;
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .actions.actions-centered {
+        margin-top: 24px;
+    }
+
+    .btn-submit-hero {
+        width: 100%;
+        min-width: unset;
+        max-width: 400px;
+        padding: 14px 20px;
+        font-size: 0.98rem;
     }
 
     .radio-group {

@@ -43,38 +43,26 @@
                     </div>
 
                     <div class="scope-selector">
-                        <div class="scope-input-card" id="card-scope-start">
-                            <div class="scope-input-header">
-                                <span class="scope-header-icon">📅</span>
-                                <label for="scope-start">From (प्रारंभ माह) <span class="required-star">*</span></label>
+                        <div class="scope-field">
+                            <label for="scope-start" class="scope-label">From (प्रारंभ माह) <span class="required-star">*</span></label>
+                            <div class="scope-box" id="box-scope-start">
+                                <span class="scope-box-icon">📅</span>
+                                <input type="month" id="scope-start" value="2023-03">
+                                <span class="scope-box-chevron">▾</span>
                             </div>
-                            <div class="scope-input-wrapper">
-                                <input type="month" id="scope-start" value="2023-03" title="माह चुनने के लिए क्लिक करें (Click to pick month)">
-                                <div class="scope-picker-badge">
-                                    <span>🗓️</span>
-                                    <span class="picker-btn-text">बदलें</span>
-                                </div>
-                            </div>
-                            <div class="scope-help-text">👆 क्लिक करके प्रारंभ माह बदलें</div>
                         </div>
 
-                        <div class="scope-arrow-container">
+                        <div class="scope-connector">
                             <span class="scope-arrow">➔</span>
                         </div>
 
-                        <div class="scope-input-card" id="card-scope-end">
-                            <div class="scope-input-header">
-                                <span class="scope-header-icon">📅</span>
-                                <label for="scope-end">To (अंतिम माह) <span class="required-star">*</span></label>
+                        <div class="scope-field">
+                            <label for="scope-end" class="scope-label">To (अंतिम माह) <span class="required-star">*</span></label>
+                            <div class="scope-box" id="box-scope-end">
+                                <span class="scope-box-icon">📅</span>
+                                <input type="month" id="scope-end" value="2026-02">
+                                <span class="scope-box-chevron">▾</span>
                             </div>
-                            <div class="scope-input-wrapper">
-                                <input type="month" id="scope-end" value="2026-02" title="माह चुनने के लिए क्लिक करें (Click to pick month)">
-                                <div class="scope-picker-badge">
-                                    <span>🗓️</span>
-                                    <span class="picker-btn-text">बदलें</span>
-                                </div>
-                            </div>
-                            <div class="scope-help-text">👆 क्लिक करके अंतिम माह बदलें</div>
                         </div>
                     </div>
                     <div class="scope-info" id="scope-info">🗓️ चयनित एरियर दायरा: March 2023 से February 2026 (कुल 36 माह • 3 वित्तीय वर्ष: 2023-24, 2024-25, 2025-26)</div>
@@ -277,8 +265,11 @@
                         </table>
                     </div>
 
-                    <div class="actions" style="margin-top: 24px;">
-                        <button type="submit" class="btn btn-primary" id="btn-submit" disabled>📥 Generate & Download</button>
+                    <div class="actions actions-centered">
+                        <button type="submit" class="btn btn-submit-hero" id="btn-submit" disabled>
+                            <span class="btn-icon">📥</span>
+                            <span class="btn-text">Generate & Download Arrear Forms</span>
+                        </button>
                     </div>
                 </section>
             </form>
