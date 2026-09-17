@@ -1,6 +1,6 @@
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment
-from app.generators.template_manager import adjust_rows_in_sheet, format_total_row_formulas
+from app.generators.template_manager import adjust_rows_in_sheet, format_total_row_formulas, configure_print_layout
 
 def write_salary_arrear_sheet(ws, arrear_result):
     """
@@ -114,3 +114,6 @@ def write_salary_arrear_sheet(ws, arrear_result):
     cell_hm = ws[f"R{sig_row}"]
     cell_hm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=False)
     cell_hm.font = Font(name="Arial", size=10, bold=True)
+    
+    # 7. Configure print layout: fit to one A4 landscape page
+    configure_print_layout(ws, last_col_letter='Z', last_row=sig_row)

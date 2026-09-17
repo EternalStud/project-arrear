@@ -2,6 +2,8 @@
 import openpyxl
 from openpyxl.styles import Font, Border, Side, Alignment, PatternFill
 from openpyxl.worksheet.cell_range import CellRange
+from openpyxl.worksheet.page import PrintPageSetup, PageMargins
+from openpyxl.utils import get_column_letter
 from copy import copy
 import shutil
 import os
@@ -87,3 +89,68 @@ def format_total_row_formulas(ws, total_row_idx, start_row=8, cols_range=None):
         
         # Ensure it is bold
         cell.font = Font(name=cell.font.name, size=cell.font.size, bold=True)
+
+
+def configure_print_layout(ws, last_col_letter, last_row, header_rows=7, data_row_height=18.0):
+    """
+    Configures the worksheet for single-page print layout so teachers
+    can print directly without needing to adjust any settings.
+    
+    Args:
+        ws: The openpyxl worksheet object.
+        last_col_letter: The last column letter (e.g., 'Z' for Salary, 'Q' for DA).
+        last_row: The last row to include in the print area (typically sig_row).
+        header_rows: Number of header rows (rows 1-7 have different formatting).
+        data_row_height: Uniform height for data rows (in points).
+    """
+    # --- 1. Page Setup: Fit to one page, landscape ---
+    ws.page_setup.orientation = 'landscape'
+    ws.page_setup.paperSize = ws.PAPERSIZE_A4
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 1
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    
+    # --- 2. Narrow Margins (inches) for maximum content area ---
+    ws.page_margins = PageMargins(
+        left=0.25,
+        right=0.25,
+        top=0.4,
+        bottom=0.4,
+        header=0.2,
+        footer=0.2
+    )
+    
+    # --- 3. Print Area ---
+    ws.print_area = f'A1:{last_col_letter}{last_row}'
+    
+    # --- 4. Center content on page ---
+    ws.print_options.horizontalCentered = True
+    ws.print_options.verticalCentered = False
+    
+    # --- 5. Uniform Column Widths ---
+    # Calculate total columns from the last_col_letter
+    from openpyxl.utils import column_index_from_string
+    total_cols = column_index_from_string(last_col_letter)
+    
+    # Column A (Month/Serial) gets slightly more width; rest are uniform
+    col_a_width = 12.0
+    # For A4 Landscape with narrow margins, usable width ~35cm ≈ ~130 Excel units
+    # Distribute remaining width evenly across data columns
+    remaining_width = max(8.0, (130.0 - col_a_width) / max(1, total_cols - 1))
+    # Cap at reasonable maximum for readability
+    uniform_width = min(remaining_width, 12.0)
+    
+    ws.column_dimensions['A'].width = col_a_width
+    for col_idx in range(2, total_cols + 1):
+        col_letter = get_column_letter(col_idx)
+        ws.column_dimensions[col_letter].width = uniform_width
+    
+    # --- 6. Uniform Row Heights ---
+    # Header rows (1-7) keep their existing heights or get a reasonable default
+    for row in range(1, header_rows + 1):
+        if ws.row_dimensions[row].height is None:
+            ws.row_dimensions[row].height = 20.0
+    
+    # Data rows + total row get uniform height
+    for row in range(header_rows + 1, last_row + 1):
+        ws.row_dimensions[row].height = data_row_height
