@@ -28,7 +28,7 @@ def write_da_arrear_sheet(ws, arrear_result):
     ws["K4"] = f"DATE OF JOINING- {employee.get('doj') or ''}"
     
     ws["A5"] = f"PRAN- {employee.get('pran') or ''}"
-    ws["F5"] = f"ACCOUN NO.- {employee.get('bank_account') or ''}"
+    ws["F5"] = f"ACCOUNT NO.- {employee.get('bank_account') or ''}"
     ws["K5"] = f"IFSC - {employee.get('ifsc') or ''}"
     
     # 2. Adjust rows dynamically based on the number of arrear months

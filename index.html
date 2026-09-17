@@ -20,7 +20,7 @@
                 <h1>Bihar Teacher Arrear Portal</h1>
             </div>
             <p class="subtitle">Official Salary & DA Arrear Form Generator for DPO Establishment</p>
-            <p class="portal-desc">Audit-compliant arrear calculation for BPSC TRE 1, TRE 2, TRE 3 & Niyojit Shikshak across all Bihar districts</p>
+            <p class="portal-desc">Audit-compliant arrear calculation for BPSC TRE 1, TRE 2, TRE 3 , Exclusive and HEADMASTER  across all Bihar districts</p>
             <div style="margin-top: 14px;">
                 <button type="button" class="btn btn-secondary btn-sm" id="btn-open-guide" onclick="document.getElementById('user-guide-modal').style.display='flex'" style="border-radius: 20px; padding: 7px 18px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500;">
                     📖 User Guide & Instructions
@@ -38,17 +38,8 @@
                     <div class="guidance-box recommendation-box">
                         <div class="guidance-icon">💡</div>
                         <div class="guidance-content">
-                            <strong>Recommended for Overall Arrear:</strong>
-                            Set <strong>From: [Your Joining Month]</strong> (e.g. <code>Nov-2023</code> for TRE 1 or <code>Feb-2024</code> for TRE 2) to <strong>To: [Current Month / Till Date]</strong>. This automatically generates a complete arrear claim from day one of joining up to the present.
-                        </div>
-                    </div>
-
-                    <div class="scope-presets-container">
-                        <span class="preset-label">Quick Presets:</span>
-                        <div class="scope-preset-buttons">
-                            <button type="button" class="btn-scope-pill" data-start="2023-11" data-end="2026-02">⭐ BPSC TRE 1 (Nov-23 → Present)</button>
-                            <button type="button" class="btn-scope-pill" data-start="2024-02" data-end="2026-02">⭐ BPSC TRE 2 (Feb-24 → Present)</button>
-                            <button type="button" class="btn-scope-pill" data-start="2023-03" data-end="2026-02">📅 Full 3 FYs (2023–26)</button>
+                            <strong>परामर्श (Overall Arrear के लिए):</strong>
+                            यदि आप अपनी नियुक्ति (Joining) से लेकर अब तक का संपूर्ण एरियर क्लेम करना चाहते हैं, तो <strong>From</strong> में अपना <strong>Joining Month</strong> (जैसे TRE-1 के लिए <code>Nov-2023</code>, TRE-2 के लिए <code>Feb-2024</code>) और <strong>To</strong> में <strong>Current Month / Till Date</strong> चुनें। इसके अनुसार सभी आवश्यक वित्तीय वर्षों (Financial Years) के HRMS स्टेटमेंट अपलोड स्लॉट अपने-आप तैयार हो जाएंगे।
                         </div>
                     </div>
 
@@ -200,8 +191,8 @@
                     <div class="guidance-box hint-box">
                         <div class="guidance-icon">💡</div>
                         <div class="guidance-content">
-                            <strong>Multiple School / Transfer Hint:</strong>
-                            If you worked in multiple schools during the arrear period (e.g. transferred from a rural school with 4%/5% HRA to an urban or sub-divisional school with 7.5%/10% HRA), click <strong>"+ Add HRA Range"</strong> to add separate rows with the exact <em>From</em> and <em>To</em> months and the corresponding admissible HRA rate for each school.
+                            <strong>स्थानांतरण / अलग-अलग विद्यालय का परामर्श (HRA Hint):</strong>
+                            यदि एरियर अवधि के दौरान आपका तबादला हुआ है या आपने एक से अधिक विद्यालयों में कार्य किया है (जैसे ग्रामीण विद्यालय 4%/5% HRA से अनुमंडल/शहरी विद्यालय 7.5%/10% HRA), तो <strong>"+ Add HRA Range"</strong> पर क्लिक करें और प्रत्येक विद्यालय की समयावधि (<em>From Month</em> से <em>To Month</em>) तथा उस अवधि की अनुमन्य HRA दर अलग-अलग दर्ज करें।
                         </div>
                     </div>
 
@@ -274,6 +265,10 @@
                 <div class="progress-status" id="progress-status">Uploading documents...</div>
             </div>
         </main>
+
+        <footer class="site-footer">
+            <p>Made with &lt;3 by <strong>Eternal Student</strong></p>
+        </footer>
     </div>
 
     <!-- Donation Modal -->

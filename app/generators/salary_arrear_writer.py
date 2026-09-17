@@ -30,7 +30,7 @@ def write_salary_arrear_sheet(ws, arrear_result):
     ws["Q4"] = f"DATE OF JOINING- {employee.get('doj') or ''}"
     
     ws["A5"] = f"PRAN- {employee.get('pran') or ''}"
-    ws["I5"] = f"ACCOUN NO.- {employee.get('bank_account') or ''}"
+    ws["I5"] = f"ACCOUNT NO.- {employee.get('bank_account') or ''}"
     ws["Q5"] = f"IFSC - {employee.get('ifsc') or ''}"
     
     # 2. Adjust rows dynamically based on the number of arrear months

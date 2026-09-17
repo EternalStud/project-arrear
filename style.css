@@ -179,58 +179,7 @@ header h1 {
     color: #60a5fa;
 }
 
-/* Scope Preset Pills */
-.scope-presets-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-    background: rgba(255, 255, 255, 0.02);
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
 
-.preset-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.scope-preset-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.btn-scope-pill {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: var(--text-secondary);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-scope-pill:hover {
-    background: rgba(99, 102, 241, 0.2);
-    border-color: rgba(99, 102, 241, 0.5);
-    color: #f8fafc;
-    transform: translateY(-1px);
-}
-
-.btn-scope-pill.active {
-    background: var(--accent-gradient);
-    border-color: var(--accent-color);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
-}
 
 .uppercase-input {
     text-transform: uppercase;
@@ -1098,109 +1047,256 @@ footer .heart {
     color: var(--warning-color);
 }
 
-/* Responsive adjustments for mobile screens */
-@media (max-width: 480px) {
+
+/* Site Footer */
+.site-footer {
+    margin-top: 36px;
+    margin-bottom: 24px;
+    text-align: center;
+    padding: 16px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.site-footer p {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.site-footer strong {
+    color: #a5b4fc;
+    font-weight: 600;
+}
+
+/* Responsive adjustments for tablet and mobile screens (<= 768px) */
+@media (max-width: 768px) {
     body {
-        padding: 12px 6px;
+        padding: 16px 12px;
     }
 
     .container {
-        padding: 4px;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
     }
-    
+
     header {
-        margin-bottom: 16px;
+        margin-bottom: 20px;
     }
 
     header h1 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
-    
-    header p {
-        font-size: 0.8rem;
+
+    .subtitle {
+        font-size: 0.95rem;
     }
-    
+
+    .portal-desc {
+        font-size: 0.86rem;
+        padding: 0 4px;
+        line-height: 1.45;
+    }
+
     .card {
-        padding: 16px 12px;
-        border-radius: 12px;
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+
+    .card h2 {
+        font-size: 1.15rem;
+        margin-bottom: 16px;
+    }
+
+    .upload-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .input-row {
         grid-template-columns: 1fr;
-        gap: 12px;
-        margin-bottom: 12px;
-    }
-    
-    .hra-table-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin-bottom: 16px;
-    }
-    
-    .hra-table {
-        min-width: 450px;
-    }
-
-    .hra-table th, .hra-table td {
-        padding: 8px 6px;
-        font-size: 0.8rem;
-    }
-    
-    .details-list-container {
-        overflow-x: auto;
-    }
-    
-    .details-table {
-        min-width: 500px;
-    }
-    
-    .action-buttons {
-        grid-template-columns: 1fr !important;
-        gap: 10px;
-    }
-
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .employee-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .emp-badge {
-        margin-left: 0;
+        gap: 14px;
+        margin-bottom: 14px;
     }
 
     .scope-selector {
         flex-direction: column;
-        gap: 8px;
         align-items: stretch;
+        gap: 10px;
     }
 
     .scope-selector .input-group {
         width: 100%;
     }
-    
+
     .scope-arrow {
         align-self: center;
         transform: rotate(90deg);
-        margin: 4px 0;
+        margin: 2px 0;
+        font-size: 1.2rem;
     }
-    
-    .fitment-details {
+
+    .radio-group {
         flex-direction: column;
-        gap: 6px;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .radio-label {
+        width: 100%;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .radio-label:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .guidance-box {
+        padding: 12px 14px;
+        gap: 10px;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .guidance-icon {
+        font-size: 1.15rem;
+    }
+
+    .hra-section-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .hra-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 16px;
+    }
+
+    .hra-table {
+        min-width: 440px;
+    }
+
+    .hra-table th, .hra-table td {
+        padding: 8px 8px;
+        font-size: 0.82rem;
     }
 
     .btn {
-        padding: 10px 16px;
-        font-size: 0.9rem;
+        padding: 11px 18px;
+        font-size: 0.92rem;
+    }
+
+    .site-footer {
+        margin-top: 28px;
+        margin-bottom: 16px;
+        padding: 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra small mobile screens (<= 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 12px 8px;
+    }
+
+    header {
+        margin-bottom: 16px;
+    }
+
+    header h1 {
+        font-size: 1.45rem;
+        line-height: 1.25;
+    }
+
+    .logo-container {
+        gap: 8px;
+    }
+
+    .logo-icon {
+        font-size: 1.8rem;
+    }
+
+    .portal-badge {
+        font-size: 0.74rem;
+        padding: 4px 10px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.35;
+    }
+
+    .subtitle {
+        font-size: 0.84rem;
+    }
+
+    .portal-desc {
+        font-size: 0.78rem;
+    }
+
+    .card {
+        padding: 16px 12px;
+        border-radius: 14px;
+    }
+
+    .card h2 {
+        font-size: 1.05rem;
+        margin-bottom: 12px;
+    }
+
+    .input-row {
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .input-group label {
+        font-size: 0.82rem;
+    }
+
+    .input-group input[type="text"], 
+    .input-group input[type="number"], 
+    .input-group select, 
+    .preset-select,
+    input[type="month"] {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .guidance-box {
+        padding: 10px 12px;
+        gap: 8px;
+        font-size: 0.8rem;
+        line-height: 1.45;
+        margin: 10px 0 14px 0;
+    }
+
+    .guidance-icon {
+        font-size: 1.05rem;
+    }
+
+    .btn {
+        padding: 10px 14px;
+        font-size: 0.88rem;
+    }
+
+    .hra-table th, .hra-table td {
+        padding: 7px 5px;
+        font-size: 0.78rem;
     }
 
     .modal-content {
-        padding: 20px 16px;
+        padding: 18px 12px;
+        border-radius: 14px;
+    }
+
+    .guide-scroll-body {
+        max-height: 50vh;
     }
 }
 

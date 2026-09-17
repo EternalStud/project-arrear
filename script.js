@@ -279,27 +279,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    document.getElementById("scope-start").addEventListener("change", () => {
-        document.querySelectorAll(".btn-scope-pill").forEach(p => p.classList.remove("active"));
-        regenerateUploadSlots();
-    });
-    document.getElementById("scope-end").addEventListener("change", () => {
-        document.querySelectorAll(".btn-scope-pill").forEach(p => p.classList.remove("active"));
-        regenerateUploadSlots();
-    });
-
-    // Quick Scope Preset Pills
-    document.querySelectorAll(".btn-scope-pill").forEach(pill => {
-        pill.addEventListener("click", () => {
-            document.querySelectorAll(".btn-scope-pill").forEach(p => p.classList.remove("active"));
-            pill.classList.add("active");
-            const start = pill.getAttribute("data-start");
-            const end = pill.getAttribute("data-end");
-            if (start) document.getElementById("scope-start").value = start;
-            if (end) document.getElementById("scope-end").value = end;
-            regenerateUploadSlots();
-        });
-    });
+    document.getElementById("scope-start").addEventListener("change", regenerateUploadSlots);
+    document.getElementById("scope-end").addEventListener("change", regenerateUploadSlots);
 
     // District selection & custom input
     const districtSelect = document.getElementById("district");
